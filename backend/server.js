@@ -53,6 +53,35 @@ app.use('/api/partenaires', partenaireRoutes);
 const naturePartenariatRoutes = require('./routes/naturePartenariats');
 app.use('/api/naturepartenariats', naturePartenariatRoutes);
 
+const etudiantParticipePartenariatRoutes = require('./routes/etudiantparticipepartenariat');
+app.use('/api/etudiantparticipepartenariats', etudiantParticipePartenariatRoutes);
+
+const certificationLangueRoutes = require('./routes/certificationlangues');
+app.use('/api/certificationlangues', certificationLangueRoutes);
+
+const etudiantPasseCertificationRoutes = require('./routes/etudiantpassecertifications');
+app.use('/api/etudiantpassecertifications', etudiantPasseCertificationRoutes);
+
+const absenceRoutes = require('./routes/absences');
+app.use('/api/absences', absenceRoutes);
+
+const etatRoutes = require('./routes/etats');
+app.use('/api/etats', etatRoutes);
+
+const typeMobiliteRoutes = require('./routes/typemobilites');
+app.use('/api/typemobilites', typeMobiliteRoutes);
+
+const cursusRoutes = require('./routes/cursus');
+app.use('/api/cursus', cursusRoutes);
+
+const decisionJurysRoutes = require('./routes/decisionjurys');
+app.use('/api/decisionjurys', decisionJurysRoutes);
+
+const promotionRoutes = require('./routes/promotions');
+app.use('/api/promotions', promotionRoutes);
+
+const anneeUniversitaireRoutes = require('./routes/anneeuniversitaires');
+app.use('/api/anneeuniversitaires', anneeUniversitaireRoutes);
 
 // 🟢 Lancer le serveur
 const PORT = process.env.PORT || 3000;

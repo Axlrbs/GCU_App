@@ -2,7 +2,13 @@ const db = require('../models');
 const { validationResult } = require('express-validator');
 
 exports.getAll = async (req, res) => {
-  const etudiants = await db.etudiant.findAll({ include: db.formation });
+  const etudiants = await db.etudiant.findAll({ 
+    include: [
+      {model: db.formation},
+      {model:db.cursus},
+      {model: db.statutetudiant}
+  ]
+     });
   res.json(etudiants);
 };
 
@@ -17,7 +23,13 @@ exports.create = async (req, res) => {
 };
 
 exports.getOne = async (req, res) => {
-    const etu = await db.etudiant.findByPk(req.params.id);
+    const etu = await db.etudiant.findByPk(req.params.id, 
+      {include: [
+        {model: db.formation},
+        {model:db.cursus},
+        {model: db.statutetudiant}
+      ]
+    });
     if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
     res.json(etu);
   };
