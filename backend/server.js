@@ -41,6 +41,18 @@ app.use('/api/pays', paysRoutes);
 const etablissementRoutes = require('./routes/etablissements');
 app.use('/api/etablissements', etablissementRoutes);
 
+const etablissementorigineformationRoutes = require('./routes/etablissementorigineformations');
+app.use('/api/etablissementorigineformations', etablissementorigineformationRoutes);
+
+const formationRoutes = require('./routes/formations');
+app.use('/api/formations', formationRoutes);
+
+const partenaireRoutes = require('./routes/partenaires');
+app.use('/api/partenaires', partenaireRoutes);
+
+const naturePartenariatRoutes = require('./routes/naturePartenariats');
+app.use('/api/naturepartenariats', naturePartenariatRoutes);
+
 
 // 🟢 Lancer le serveur
 const PORT = process.env.PORT || 3000;

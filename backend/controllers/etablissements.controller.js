@@ -15,7 +15,9 @@ exports.getAll = async (req, res) => {
 exports.getOne = async (req, res) => {
   try {
     const etablissement = await db.etablissement.findByPk(req.params.id, {
-      include: [{ model: db.ville}]
+      include: [{ model: db.ville, include: [
+        {model: db.pays}
+      ]}]
     });
     if (!etablissement) return res.status(404).json({ message: 'Établissement non trouvé' });
     res.json(etablissement);
