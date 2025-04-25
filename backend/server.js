@@ -95,6 +95,10 @@ app.use('/api/parcours', parcoursRoutes);
 const parcoursEtudiantParSemestreRoutes = require('./routes/parcoursEtudiantParSemestre')
 app.use('/api/parcoursetudiantparsemestre', parcoursEtudiantParSemestreRoutes);
 
+const utilisateurRoutes =  require('./routes/utilisateurs')
+app.use('/api/utilisateurs', utilisateurRoutes);
+
+
 
 // 🟢 Lancer le serveur
 const PORT = process.env.PORT || 3000;
