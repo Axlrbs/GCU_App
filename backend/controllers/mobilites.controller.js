@@ -9,7 +9,11 @@ exports.getAll = async (req, res) => {
         { model: db.anneeUniversitaire },
         { model: db.etat, as: 'etatContratEtude' },
         { model: db.etat, as: 'etatReleveNote' },
-        { model: db.etablissement }
+        { model: db.etablissement, include: [
+          {model: db.ville, include: [
+            {model: db.pays}
+          ]}
+        ]}
       ]  });
   res.json(data);
 };
@@ -22,7 +26,11 @@ exports.getOne = async (req, res) => {
         { model: db.anneeUniversitaire },
         { model: db.etat, as: 'etatContratEtude' },
         { model: db.etat, as: 'etatReleveNote' },
-        { model: db.etablissement }
+        { model: db.etablissement, include: [
+          {model: db.ville, include: [
+            {model: db.pays}
+          ]}
+        ]}
       ]
   });
   if (!item) return res.status(404).json({ message: 'Mobilité non trouvée' });

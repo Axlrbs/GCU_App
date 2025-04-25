@@ -32,6 +32,15 @@ app.use('/api/tuteurs', tuteurRoutes);
 const roleRoutes = require('./routes/roles');
 app.use('/api/roles', roleRoutes);
 
+const villeRoutes = require('./routes/villes');
+app.use('/api/villes', villeRoutes);
+
+const paysRoutes = require('./routes/pays');
+app.use('/api/pays', paysRoutes);
+
+const etablissementRoutes = require('./routes/etablissements');
+app.use('/api/etablissements', etablissementRoutes);
+
 
 // 🟢 Lancer le serveur
 const PORT = process.env.PORT || 3000;
