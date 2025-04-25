@@ -83,6 +83,19 @@ app.use('/api/promotions', promotionRoutes);
 const anneeUniversitaireRoutes = require('./routes/anneeuniversitaires');
 app.use('/api/anneeuniversitaires', anneeUniversitaireRoutes);
 
+const resultatAnneeEtudiantRoutes = require('./routes/resultatanneeetudiants');
+app.use('/api/resultatanneeetudiants', resultatAnneeEtudiantRoutes);
+
+const semestreRoutes = require('./routes/semestres');
+app.use('/api/semestres', semestreRoutes);
+
+const parcoursRoutes = require('./routes/parcours');
+app.use('/api/parcours', parcoursRoutes);
+
+const parcoursEtudiantParSemestreRoutes = require('./routes/parcoursEtudiantParSemestre')
+app.use('/api/parcoursetudiantparsemestre', parcoursEtudiantParSemestreRoutes);
+
+
 // 🟢 Lancer le serveur
 const PORT = process.env.PORT || 3000;
 db.sequelize.sync().then(() => {

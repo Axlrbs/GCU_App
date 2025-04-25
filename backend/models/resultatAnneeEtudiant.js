@@ -51,6 +51,8 @@ module.exports = function(sequelize, DataTypes) {
     RAE.belongsTo(models.etudiant, { foreignKey: 'numeroEtudiant' });
     RAE.belongsTo(models.promotion, { foreignKey: 'promotionId' });
     RAE.belongsTo(models.decisionJurys, { foreignKey: 'codeDecision' });
+    RAE.belongsTo(models.anneeUniversitaire, { foreignKey: 'anneeUniversitaireId' });
+
   };
   
   return RAE;

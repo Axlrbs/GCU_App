@@ -29,6 +29,8 @@ module.exports = function(sequelize, DataTypes) {
   AnneeUniversitaire.associate = function(models) {
     AnneeUniversitaire.hasMany(models.mobilite, { foreignKey: 'anneeuniversitaireid' });
     AnneeUniversitaire.hasMany(models.parcoursEtudiantParSemestre, { foreignKey: 'anneeUniversitaireId' });
+    AnneeUniversitaire.hasMany(models.resultatAnneeEtudiant, { foreignKey: 'anneeUniversitaireId' });
+
   };
   
 
