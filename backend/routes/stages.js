@@ -1,0 +1,138 @@
+const express = require('express');
+const { body, validationResult } = require('express-validator');
+const { verifyToken } = require('../middlewares/auth');
+const controller = require('../controllers/stages.controller');
+
+const router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Stages
+ *   description: Gestion des stages
+ */
+
+/**
+ * @swagger
+ * /api/stages:
+ *   get:
+ *     summary: Liste des stages
+ *     tags: [Stages]
+ *     responses:
+ *       200:
+ *         description: Liste OK
+ */
+router.get('/', controller.getAll);
+
+/**
+ * @swagger
+ * /api/stages:
+ *   post:
+ *     summary: Créer un stage
+ *     tags: [Stages]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - numeroEtudiant
+ *               - entrepriseId
+ *               - anneeUniversitaireId
+ *             properties:
+ *               numeroEtudiant:
+ *                 type: integer
+ *               entrepriseId:
+ *                 type: integer
+ *               anneeUniversitaireId:
+ *                 type: integer
+ *               sujetStage:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Créé
+ */
+router.post(
+  '/',
+  verifyToken,
+  [
+    body('numeroEtudiant').isInt(),
+    body('entrepriseId').isInt(),
+    body('anneeUniversitaireId').isInt()
+  ],
+  controller.create
+);
+
+/**
+ * @swagger
+ * /api/stages/{id}:
+ *   get:
+ *     summary: Obtenir un stage par ID
+ *     tags: [Stages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Trouvé
+ *       404:
+ *         description: Introuvable
+ */
+router.get('/:id', controller.getOne);
+
+/**
+ * @swagger
+ * /api/stages/{id}:
+ *   put:
+ *     summary: Modifier un stage
+ *     tags: [Stages]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sujetStage:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Modifié
+ */
+router.put('/:id', verifyToken, controller.update);
+
+/**
+ * @swagger
+ * /api/stages/{id}:
+ *   delete:
+ *     summary: Supprimer un stage
+ *     tags: [Stages]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Supprimé
+ */
+router.delete('/:id', verifyToken, controller.remove);
+
+module.exports = router;

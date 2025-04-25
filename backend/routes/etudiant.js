@@ -1,15 +1,17 @@
+const express = require('express');
+const { body, validationResult } = require('express-validator');
+const { verifyToken } = require('../middlewares/auth');
+const controller = require('../controllers/etudiants.controller');
+const { verify } = require('jsonwebtoken');
+
+const router = express.Router();
+
 /**
  * @swagger
  * tags:
  *   name: Etudiants
  *   description: Gestion des étudiants
  */
-
-const express = require('express');
-const { body, validationResult } = require('express-validator');
-const router = express.Router();
-const db = require('../models');
-const auth = require('../middlewares/auth');
 
 /**
  * @swagger
@@ -21,10 +23,7 @@ const auth = require('../middlewares/auth');
  *       200:
  *         description: Succès
  */
-router.get('/', async (req, res) => {
-  const data = await db.etudiant.findAll({ include: db.formation });
-  res.json(data);
-});
+router.get('/', controller.getAll);
 
 /**
  * @swagger
@@ -43,10 +42,7 @@ router.get('/', async (req, res) => {
  *       200:
  *         description: Étudiant trouvé
  */
-router.get('/:id', async (req, res) => {
-  const data = await db.etudiant.findByPk(req.params.id);
-  res.json(data);
-});
+router.get('/:id', controller.getOne);
 
 /**
  * @swagger
@@ -83,28 +79,26 @@ router.get('/:id', async (req, res) => {
  *                 type: integer
  *               formationId:
  *                 type: integer
+ *               cursusId:
+ *                 type: integer
+ *               sexe:
+ *                 type: string
+ *               statutetudiantId:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Étudiant créé
  */
 router.post(
   '/',
-  auth,
+  verifyToken,
   [
     body('numeroEtudiant').isInt().withMessage('Le numéro étudiant doit être un entier.'),
     body('nomEtudiant').notEmpty().withMessage('Le nom est requis.'),
     body('prenomEtudiant').notEmpty().withMessage('Le prénom est requis.'),
     body('mailEtudiant').isEmail().withMessage('Email invalide.'),
   ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ erreurs: errors.array() });
-    }
-
-    const newItem = await db.etudiant.create(req.body);
-    res.status(201).json(newItem);
-  }
+  controller.create
 );
 
 /**
@@ -131,10 +125,7 @@ router.post(
  *       204:
  *         description: Mise à jour réussie
  */
-router.put('/:id', async (req, res) => {
-  await db.etudiant.update(req.body, { where: { numeroEtudiant: req.params.id } });
-  res.sendStatus(204);
-});
+router.put('/:id', verifyToken, controller.update);
 
 /**
  * @swagger
@@ -152,9 +143,6 @@ router.put('/:id', async (req, res) => {
  *       204:
  *         description: Suppression réussie
  */
-router.delete('/:id', async (req, res) => {
-  await db.etudiant.destroy({ where: { numeroEtudiant: req.params.id } });
-  res.sendStatus(204);
-});
+router.delete('/:id', verifyToken, controller.remove);
 
 module.exports = router;

@@ -84,7 +84,7 @@ module.exports = function(sequelize, DataTypes) {
     Mobilite.belongsTo(models.etat, { foreignKey: 'etatcontratetudeid', as: 'etatContratEtude' });
     Mobilite.belongsTo(models.etat, { foreignKey: 'etatrelevenoteid', as: 'etatReleveNote' });
     Mobilite.belongsTo(models.typeMobilite, { foreignKey: 'typeMobiliteId' });
-
+    Mobilite.belongsTo(models.etablissement, { foreignKey: 'etablissementId' });
   };
 
   return Mobilite;
