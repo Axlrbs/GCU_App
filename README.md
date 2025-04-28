@@ -97,7 +97,7 @@ Dans le fichier `package.json` :
 
 ## 📖 Auteur
 
-- Projet réalisé par **[Ton Nom ici]**
+- Projet réalisé par **Axel Gérifaud** pour le département Génie Civil et Urbanisme de l'INSA Lyon
 - Backend Node.js Express / Sequelize 2025
 
 ---
