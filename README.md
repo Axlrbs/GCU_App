@@ -102,4 +102,3 @@ Dans le fichier `package.json` :
 
 ---
 
-> Ce README est généré pour te donner un projet backend clair, évolutif et prêt pour la production. 🚀
