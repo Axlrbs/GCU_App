@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/utilisateur.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
 
 /**
  * @swagger
@@ -20,7 +21,8 @@ const controller = require('../controllers/utilisateur.controller');
  *       200:
  *         description: Liste récupérée
  */
-router.get('/', controller.getAll);
+router.get('/', authenticateToken,
+    checkRole('admin'),controller.getAll);
 
 /**
  * @swagger
@@ -40,7 +42,8 @@ router.get('/', controller.getAll);
  *       404:
  *         description: Non trouvé
  */
-router.get('/:id', controller.getById);
+router.get('/:id', authenticateToken,
+    checkRole('admin'),controller.getById);
 
 /**
  * @swagger
@@ -57,8 +60,6 @@ router.get('/:id', controller.getById);
  *             required:
  *               - email
  *               - motDePasse
- *               - nom
- *               - prenom
  *             properties:
  *               email:
  *                 type: string
@@ -70,12 +71,13 @@ router.get('/:id', controller.getById);
  *                 type: string
  *               role:
  *                 type: string
- *                 enum: [admin, gestionnaire, lecteur]
+ *                 enum: [admin, etudes, mobilites]
  *     responses:
  *       201:
  *         description: Créé avec succès
  */
-router.post('/', controller.create);
+router.post('/', authenticateToken,
+    checkRole('admin'),controller.create);
 
 /**
  * @swagger
@@ -105,12 +107,13 @@ router.post('/', controller.create);
  *                 type: string
  *               role:
  *                 type: string
- *                 enum: [admin, gestionnaire, lecteur]
+ *                 enum: [admin, etudes, mobilites]
  *     responses:
  *       200:
  *         description: Mis à jour avec succès
  */
-router.put('/:id', controller.update);
+router.put('/:id', authenticateToken,
+    checkRole('admin'),controller.update);
 
 /**
  * @swagger
@@ -128,6 +131,7 @@ router.put('/:id', controller.update);
  *       204:
  *         description: Supprimé
  */
-router.delete('/:id', controller.remove);
+router.delete('/:id', authenticateToken,
+    checkRole('admin'),controller.remove);
 
 module.exports = router;

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/parcours.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 /**
  * @swagger
@@ -63,7 +65,8 @@ router.get('/:id', controller.getOne);
  *       201:
  *         description: Parcours créé
  */
-router.post('/', controller.create);
+router.post('/', authenticateToken,
+    checkRole('admin'),controller.create);
 
 /**
  * @swagger
@@ -89,7 +92,8 @@ router.post('/', controller.create);
  *       200:
  *         description: Parcours mis à jour
  */
-router.put('/:id', controller.update);
+router.put('/:id', authenticateToken,
+    checkRole('admin'),controller.update);
 
 /**
  * @swagger
@@ -107,6 +111,7 @@ router.put('/:id', controller.update);
  *       204:
  *         description: Parcours supprimé
  */
-router.delete('/:id', controller.delete);
+router.delete('/:id',authenticateToken,
+    checkRole('admin'), controller.delete);
 
 module.exports = router;

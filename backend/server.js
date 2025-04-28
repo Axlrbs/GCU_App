@@ -1,14 +1,55 @@
 // 📁 server.js
+require('dotenv').config();
 
 const express = require('express');
+const helmet = require('helmet');
 const app = express();
 const db = require('./models');
+const fs = require('fs');
+const path = require('path');
+
+// ANTI-DDOS
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requêtes max par IP
+});
+
+app.use(limiter);
 
 app.use(express.json()); // Pour parser les JSON entrants
+app.use(helmet());
+
+// forcer le https
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
 
 // 🌐 Swagger
 const setupSwagger = require('./swagger');
 setupSwagger(app);
+
+app.use('/api-docs', (req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).send('Accès refusé en production');
+  }
+  next();
+});
+
+// LOG
+const morgan = require('morgan');
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' } // 'a' pour ajouter à la fin sans écraser
+);
+
+// Logger toutes les requêtes dans access.log
+app.use(morgan('combined', { stream: accessLogStream }));
+
 
 // 📦 Routes
 const etudiantRoutes = require('./routes/etudiant');

@@ -19,15 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       nom: {
         type: DataTypes.STRING,
-        allowNull: false
       },
       prenom: {
         type: DataTypes.STRING,
-        allowNull: false
       },
       role: {
-        type: DataTypes.ENUM('admin', 'gestionnaire', 'lecteur'),
-        defaultValue: 'lecteur'
+        type: DataTypes.ENUM('admin', 'etudes', 'mobilites','stages')
       }
     }, {
       tableName: 'utilisateur',

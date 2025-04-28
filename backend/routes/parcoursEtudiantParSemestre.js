@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/parcoursEtudiantParSemestre.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 /**
  * @swagger
@@ -73,7 +75,8 @@ router.get('/:id', controller.getById);
  *       201:
  *         description: Enregistrement créé
  */
-router.post('/', controller.create);
+router.post('/', authenticateToken,
+    checkRole('admin', 'etudes'),controller.create);
 
 /**
  * @swagger
@@ -105,7 +108,8 @@ router.post('/', controller.create);
  *       200:
  *         description: Enregistrement mis à jour
  */
-router.put('/:id', controller.update);
+router.put('/:id', authenticateToken,
+    checkRole('admin', 'etudes'),controller.update);
 
 /**
  * @swagger
@@ -124,6 +128,7 @@ router.put('/:id', controller.update);
  *       204:
  *         description: Supprimé avec succès
  */
-router.delete('/:id', controller.remove);
+router.delete('/:id',authenticateToken,
+    checkRole('admin', 'etudes'), controller.remove);
 
 module.exports = router;

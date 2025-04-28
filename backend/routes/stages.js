@@ -2,6 +2,8 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/stages.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -57,7 +59,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'stages'),
   [
     body('numeroEtudiant').isInt(),
     body('entrepriseId').isInt(),
@@ -113,7 +116,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: Modifié
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'stages'), controller.update);
 
 /**
  * @swagger
@@ -133,6 +137,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Supprimé
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'stages'), controller.remove);
 
 module.exports = router;

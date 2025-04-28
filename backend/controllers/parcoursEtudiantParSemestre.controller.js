@@ -4,10 +4,29 @@ const ParcoursEtudiantParSemestre = db.parcoursEtudiantParSemestre;
 
 exports.getAll = async (req, res) => {
   try {
-    const all = await ParcoursEtudiantParSemestre.findAll({
-      include: ['etudiant', 'parcour', 'semestre', 'anneeUniversitaire'],
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await ParcoursEtudiantParSemestre.findAndCountAll({
+      include: [
+        {model: db.etudiant}, 
+        {model: db.parcours}, 
+        {model: db.semestre},
+        {model: db.anneeUniversitaire}],
+      limit,
+      offset,
+      order: [['numeroEtudiant', 'ASC']] // Tu peux changer selon besoin
     });
-    res.json(all);
+
+    res.json({
+      success: true,
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      data: rows
+    });
+
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }

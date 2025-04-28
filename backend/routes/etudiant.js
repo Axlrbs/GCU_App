@@ -1,8 +1,9 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/etudiants.controller');
 const { verify } = require('jsonwebtoken');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -66,7 +67,6 @@ router.get('/:id', controller.getOne);
  *             properties:
  *               numeroEtudiant:
  *                 type: integer
- *                 example: 4016342
  *               nomEtudiant:
  *                 type: string
  *               prenomEtudiant:
@@ -83,15 +83,20 @@ router.get('/:id', controller.getOne);
  *                 type: integer
  *               sexe:
  *                 type: string
- *               statutetudiantId:
+ *               statutetudiantid:
  *                 type: integer
  *     responses:
  *       201:
  *         description: Étudiant créé
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Accès interdit
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'etudes'), // Seuls les admins ou etudes peuvent créer un étudiant
   [
     body('numeroEtudiant').isInt().withMessage('Le numéro étudiant doit être un entier.'),
     body('nomEtudiant').notEmpty().withMessage('Le nom est requis.'),
@@ -125,7 +130,11 @@ router.post(
  *       204:
  *         description: Mise à jour réussie
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes'),
+  controller.update
+);
 
 /**
  * @swagger
@@ -143,6 +152,9 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Suppression réussie
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', 
+  authenticateToken,
+  checkRole('admin'), 
+  controller.remove);
 
 module.exports = router;

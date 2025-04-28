@@ -2,6 +2,8 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/mobilites.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -60,7 +62,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'mobilites'),
   [
     body('numeroEtudiant').isInt(),
     body('typeMobiliteId').isInt(),
@@ -117,7 +120,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: Modifiée
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'mobilites'), controller.update);
 
 /**
  * @swagger
@@ -137,6 +141,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Supprimée
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'mobilites'), controller.remove);
 
 module.exports = router;

@@ -2,6 +2,8 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/villes.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -74,7 +76,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'etudes','mobilites','stages'),
   [
     body('nomVille').notEmpty().withMessage('Le nom de la ville est requis.'),
     body('codePays').notEmpty().withMessage('Le code du pays est requis.')
@@ -130,7 +133,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: Ville modifiée
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'etudes','mobilites','stages'), controller.update);
 
 /**
  * @swagger
@@ -150,6 +154,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Ville supprimée
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'etudes','mobilites','stages'), controller.remove);
 
 module.exports = router;

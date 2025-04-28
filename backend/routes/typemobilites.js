@@ -2,6 +2,8 @@ const express = require('express');
 const { body } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/typemobilites.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -50,7 +52,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'mobilites'),
   [body('libelleTypeMobilite').notEmpty().withMessage('Le libellé est requis')],
   controller.create
 );
@@ -101,7 +104,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: Type mis à jour
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'mobilites'), controller.update);
 
 /**
  * @swagger
@@ -121,6 +125,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Type supprimé
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'mobilites'), controller.remove);
 
 module.exports = router;

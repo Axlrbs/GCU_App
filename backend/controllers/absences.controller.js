@@ -3,12 +3,26 @@ const { validationResult } = require('express-validator');
 
 exports.getAll = async (req, res) => {
   try {
-    const absences = await db.absence.findAll({
-      include: [
-        { model: db.etudiant, as: 'etudiant' }
-      ]
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await db.absence.findAndCountAll({
+        include: [
+          { model: db.etudiant }
+        ],
+        limit,
+        offset,
+        order: [['numeroetudiant', 'ASC']] // Tu peux changer selon besoin
+      });
+
+    res.json({
+      success: true,
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      data: rows
     });
-    res.json(absences);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }

@@ -2,6 +2,8 @@ const express = require('express');
 const { body } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/etudiantpassecertifications.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -60,7 +62,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'etudes'),
   [
     body('numeroEtudiant').isInt(),
     body('certificationLangueId').isInt(),
@@ -87,6 +90,7 @@ router.post(
  *       204:
  *         description: Certification supprimée
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'etudes'), controller.remove);
 
 module.exports = router;

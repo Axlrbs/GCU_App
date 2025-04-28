@@ -2,6 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/etats.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -50,7 +51,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin'),
   [body('libelleEtat').notEmpty().withMessage('Le libellé est obligatoire.')],
   controller.create
 );
@@ -101,7 +103,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: État mis à jour
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin'), controller.update);
 
 /**
  * @swagger
@@ -121,6 +124,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: État supprimé
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin'), controller.remove);
 
 module.exports = router;

@@ -2,6 +2,8 @@ const express = require('express');
 const { body } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/partenaires.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -52,7 +54,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'etudes'),
   [
     body('nomPartenaire').notEmpty().withMessage('Le nom est requis'),
     body('secteurPartenaire').notEmpty().withMessage('Le secteur est requis')
@@ -108,7 +111,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: Partenaire mis à jour
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'etudes'), controller.update);
 
 /**
  * @swagger
@@ -128,6 +132,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Supprimé
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'etudes'), controller.remove);
 
 module.exports = router;

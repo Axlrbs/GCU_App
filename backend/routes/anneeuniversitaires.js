@@ -2,6 +2,8 @@ const express = require('express');
 const { body } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/anneeuniversitaires.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -58,7 +60,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'gestionnaire'),
   [
     body('libelleAnneeUniversitaire').notEmpty().withMessage('Le libellé est requis'),
     body('dateDebut').isISO8601().withMessage('Date de début invalide'),
@@ -119,7 +122,8 @@ router.get('/:id', controller.getOne);
  *       200:
  *         description: Année mise à jour
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'etudes','mobilites'), controller.update);
 
 /**
  * @swagger
@@ -139,6 +143,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Supprimée
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'etudes','mobilites'), controller.remove);
 
 module.exports = router;

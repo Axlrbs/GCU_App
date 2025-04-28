@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/etablissementorigineformations.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -52,7 +53,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'etudes'),
   [
     body('formationId').isInt(),
     body('etablissementId').isInt()
@@ -83,6 +85,7 @@ router.post(
  *       204:
  *         description: Supprimée
  */
-router.delete('/:formationId/:etablissementId', verifyToken, controller.remove);
+router.delete('/:formationId/:etablissementId', authenticateToken,
+  checkRole('admin', 'etudes'), controller.remove);
 
 module.exports = router;

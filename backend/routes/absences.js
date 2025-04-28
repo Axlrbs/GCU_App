@@ -2,6 +2,8 @@ const express = require('express');
 const { body } = require('express-validator');
 const { verifyToken } = require('../middlewares/auth');
 const controller = require('../controllers/absences.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
+
 
 const router = express.Router();
 
@@ -55,7 +57,8 @@ router.get('/', controller.getAll);
  */
 router.post(
   '/',
-  verifyToken,
+  authenticateToken,
+  checkRole('admin', 'etudes'),
   [
     body('numeroEtudiant').isInt(),
     body('dateAbsence').notEmpty().withMessage('La date est obligatoire.')
@@ -92,7 +95,8 @@ router.post(
  *       200:
  *         description: Absence mise à jour
  */
-router.put('/:id', verifyToken, controller.update);
+router.put('/:id', authenticateToken,
+  checkRole('admin', 'etudes'), controller.update);
 
 /**
  * @swagger
@@ -112,6 +116,7 @@ router.put('/:id', verifyToken, controller.update);
  *       204:
  *         description: Absence supprimée
  */
-router.delete('/:id', verifyToken, controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'etudes'), controller.remove);
 
 module.exports = router;
