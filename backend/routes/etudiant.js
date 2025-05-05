@@ -47,7 +47,26 @@ router.get('/:id', controller.getOne);
 
 /**
  * @swagger
- * /api/etudiants:
+ * /api/etudiants/getEtablissementById/{id}:
+ *   get:
+ *     summary: Récupère un étudiant et son etablissement d'origine par ID
+ *     tags: [Etudiants]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de l'étudiant
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Étudiant trouvé
+ */
+router.get('/getEtablissementById/:id', controller.getEtablissementOne);
+
+/**
+ * @swagger
+ * /api/etudiants/ajouter:
  *   post:
  *     summary: Créer un nouvel étudiant
  *     tags: [Etudiants]
@@ -94,7 +113,7 @@ router.get('/:id', controller.getOne);
  *         description: Accès interdit
  */
 router.post(
-  '/',
+  '/ajouter',
   authenticateToken,
   checkRole('admin', 'etudes'), // Seuls les admins ou etudes peuvent créer un étudiant
   [

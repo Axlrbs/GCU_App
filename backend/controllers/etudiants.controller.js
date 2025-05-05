@@ -7,9 +7,28 @@ exports.getAll = async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
     const offset = (page - 1) * limit;
 
+    const search = req.query.search || '';
+
     const { count, rows } = await db.etudiant.findAndCountAll({
+      where: search ? {
+        [db.Sequelize.Op.or]: [
+          { nomEtudiant: { [db.Sequelize.Op.iLike]: `%${search}%` } },
+          { prenomEtudiant: { [db.Sequelize.Op.iLike]: `%${search}%` } }
+        ]
+      } : undefined,
+      distinct: true,
       include: [
-        { model: db.formation },
+        { model: db.formation,
+            include: [
+              {
+                model: db.etablissementorigineformation,
+                as: 'etablissementorigineformations',
+                include: [
+                  { model: db.etablissement, as: 'etablissement' }
+                ]
+              }
+            ]
+          } ,    
         { model: db.cursus },
         { model: db.statutetudiant }
       ],
@@ -49,6 +68,28 @@ exports.getOne = async (req, res) => {
         { model: db.cursus },
         { model: db.statutetudiant }
       ]
+    });
+  if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
+  res.json(etu);
+};
+
+exports.getEtablissementOne = async (req, res) => {
+  const etu = await db.etudiant.findByPk(req.params.id,
+    {
+      include: [
+        {model: db.formation,
+          as: 'formation',
+          include: [
+            {
+              model: db.etablissementorigineformation,
+              as: 'etablissementorigineformations',
+              include: [
+                { model: db.etablissement, as: 'etablissement' }
+              ]
+            }
+          ]
+        }       
+      ]            
     });
   if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
   res.json(etu);

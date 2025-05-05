@@ -3,10 +3,17 @@ require('dotenv').config();
 
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const app = express();
 const db = require('./models');
 const fs = require('fs');
 const path = require('path');
+
+// Active CORS pour autoriser localhost:5173 (React)
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 // ANTI-DDOS
 const rateLimit = require('express-rate-limit');
