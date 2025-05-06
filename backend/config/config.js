@@ -1,4 +1,4 @@
-require('dotenv').config(); // Charge ton .env
+require('dotenv').config(); 
 
 module.exports = {
   development: {

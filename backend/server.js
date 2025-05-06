@@ -25,7 +25,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.use(express.json()); // Pour parser les JSON entrants
+app.use(express.json()); 
 app.use(helmet());
 
 // forcer le https
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// 🌐 Swagger
+// Swagger
 const setupSwagger = require('./swagger');
 setupSwagger(app);
 
@@ -51,14 +51,14 @@ app.use('/api-docs', (req, res, next) => {
 const morgan = require('morgan');
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, 'access.log'),
-  { flags: 'a' } // 'a' pour ajouter à la fin sans écraser
+  { flags: 'a' } 
 );
 
 // Logger toutes les requêtes dans access.log
 app.use(morgan('combined', { stream: accessLogStream }));
 
 
-// 📦 Routes
+// Routes
 const etudiantRoutes = require('./routes/etudiant');
 app.use('/api/etudiants', etudiantRoutes);
 
@@ -148,11 +148,11 @@ app.use('/api/utilisateurs', utilisateurRoutes);
 
 
 
-// 🟢 Lancer le serveur
+// Lancer le serveur
 const PORT = process.env.PORT || 3000;
 db.sequelize.sync().then(() => {
   app.listen(PORT, () => {
-    console.log(`✅ Serveur à l'écoute sur http://localhost:${PORT}`);
-    console.log(`📚 Swagger dispo sur http://localhost:${PORT}/api-docs`);
+    console.log(`Serveur à l'écoute sur http://localhost:${PORT}`);
+    console.log(`Swagger dispo sur http://localhost:${PORT}/api-docs`);
   });
 });
