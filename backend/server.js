@@ -18,12 +18,12 @@ app.use(cors({
 // ANTI-DDOS
 const rateLimit = require('express-rate-limit');
 
-const limiter = rateLimit({
+/*const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // 100 requêtes max par IP
-});
+});*/
 
-app.use(limiter);
+//app.use(limiter);
 
 app.use(express.json()); 
 app.use(helmet());
@@ -146,13 +146,17 @@ app.use('/api/parcoursetudiantparsemestre', parcoursEtudiantParSemestreRoutes);
 const utilisateurRoutes =  require('./routes/utilisateurs')
 app.use('/api/utilisateurs', utilisateurRoutes);
 
+const vueParcoursEtudiantsRoutes = require('./routes/vueParcoursEtudiants'); 
+app.use('/api/vueparcoursetudiants', vueParcoursEtudiantsRoutes);
+
 
 
 // Lancer le serveur
 const PORT = process.env.PORT || 3000;
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
   app.listen(PORT, () => {
+    console.log('Base synchronisée (alter)');
     console.log(`Serveur à l'écoute sur http://localhost:${PORT}`);
     console.log(`Swagger dispo sur http://localhost:${PORT}/api-docs`);
   });
-});
+}).catch(console.error);

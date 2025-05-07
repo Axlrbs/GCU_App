@@ -49,6 +49,14 @@ module.exports = function(sequelize, DataTypes) {
         model: 'etudiant',
         key: 'numeroEtudiant'
       }
+    },
+    anneeUniversitaireId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'anneeUniversitaire',
+        key: 'anneeUniversitaireId'
+      }
     }
   }, {
     sequelize,
@@ -62,6 +70,7 @@ module.exports = function(sequelize, DataTypes) {
     Stage.belongsTo(models.etudiant, { foreignKey: 'numeroEtudiant' });
     Stage.belongsTo(models.tuteur, { foreignKey: 'tuteurProId', as: 'tuteurPro' });
     Stage.belongsTo(models.tuteur, { foreignKey: 'tuteurPedagoId', as: 'tuteurPedago' });
+    Stage.belongsTo(models.anneeUniversitaire, { foreignKey: 'anneeUniversitaireId'});
   };
 
   return Stage;

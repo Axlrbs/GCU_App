@@ -55,7 +55,7 @@ exports.create = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ erreurs: errors.array() });
   }
-
+  console.log('Données reçues pour create:', req.body);
   const newEtu = await db.etudiant.create(req.body);
   res.status(201).json(newEtu);
 };
@@ -98,6 +98,7 @@ exports.getEtablissementOne = async (req, res) => {
 exports.update = async (req, res) => {
   const etu = await db.etudiant.findByPk(req.params.id);
   if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
+  //console.log('Données reçues pour update:', req.body);
 
   await etu.update(req.body);
   res.json(etu);

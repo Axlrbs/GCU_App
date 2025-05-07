@@ -4,7 +4,11 @@ const { validationResult } = require('express-validator');
 exports.getAll = async (req, res) => {
   const data = await db.mobilite.findAll({
     include: [
-        { model: db.etudiant, as: 'etudiant' },
+        { model: db.etudiant, as: 'etudiant', include :[
+          { model : db.resultatAnneeEtudiant, include : [
+            { model : db.promotion}
+          ]}
+        ]},
         { model: db.typeMobilite },
         { model: db.anneeUniversitaire },
         { model: db.etat, as: 'etatContratEtude' },

@@ -31,6 +31,14 @@ module.exports = function(sequelize, DataTypes) {
         key: 'numeroEtudiant'
       }
     },
+    anneeUniversitaireId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'anneeUniversitaire',
+        key: 'anneeUniversitaireId'
+      }
+    },
     estjustifiee: {
       type: DataTypes.BOOLEAN,
       allowNull: true
@@ -44,6 +52,7 @@ module.exports = function(sequelize, DataTypes) {
 
   Absence.associate = function(models) {
     Absence.belongsTo(models.etudiant, { foreignKey: 'numeroetudiant' });
+    Absence.belongsTo(models.anneeUniversitaire, { foreignKey: 'anneeUniversitaireId' });
   };
   
   return Absence;

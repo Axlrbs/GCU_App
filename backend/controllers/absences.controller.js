@@ -9,7 +9,8 @@ exports.getAll = async (req, res) => {
 
     const { count, rows } = await db.absence.findAndCountAll({
         include: [
-          { model: db.etudiant }
+          { model: db.etudiant },
+          { model: db.anneeUniversitaire}
         ],
         limit,
         offset,

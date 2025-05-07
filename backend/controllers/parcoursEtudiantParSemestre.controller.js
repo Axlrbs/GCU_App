@@ -1,22 +1,22 @@
-// controllers/parcoursEtudiantParSemestre.controller.js
 const db = require('../models');
 const ParcoursEtudiantParSemestre = db.parcoursEtudiantParSemestre;
 
 exports.getAll = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
     const offset = (page - 1) * limit;
 
     const { count, rows } = await ParcoursEtudiantParSemestre.findAndCountAll({
       include: [
-        {model: db.etudiant}, 
-        {model: db.parcours}, 
-        {model: db.semestre},
-        {model: db.anneeUniversitaire}],
+        { model: db.etudiant },
+        { model: db.parcours },
+        { model: db.semestre },
+        { model: db.anneeUniversitaire }
+      ],
       limit,
       offset,
-      order: [['numeroEtudiant', 'ASC']] // Tu peux changer selon besoin
+      order: [['numeroEtudiant', 'ASC']]
     });
 
     res.json({
@@ -27,6 +27,72 @@ exports.getAll = async (req, res) => {
       data: rows
     });
 
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};
+
+/**
+ * GET /api/parcoursetudiantparsemestre/etudiants
+ * Retourne la liste des étudiants avec :
+ *  - leurs parcours par semestre (avec le libellé de l'année universitaire),
+ *  - leur résultat annuel (avec promotion et code décision),
+ * filtrés sur une année universitaire donnée.
+ *
+ * Query params :
+ *   - anneeUniversitaireId (obligatoire)
+ */
+exports.getStudentsByYear = async (req, res) => {
+  try {
+    const { anneeUniversitaireId } = req.query;
+    if (!anneeUniversitaireId) {
+      return res.status(400).json({ message: 'Le paramètre anneeUniversitaireId est requis.' });
+    }
+
+    // Récupération des étudiants
+    const students = await db.etudiant.findAll({
+      include: [
+        {
+          model: db.parcoursEtudiantParSemestre,
+          include: [
+            { model: db.parcours },
+            { model: db.semestre },
+            // Inclure l'année universitaire pour chaque parcours semestriel
+            { model: db.anneeUniversitaire }
+          ]
+        },
+        {
+          model: db.resultatAnneeEtudiant,
+          where: { anneeUniversitaireId },
+          include: [
+            // Remonter le nom de la promotion
+            { model: db.promotion, attributes: ['nomPromotion'] }
+          ]
+        }
+      ],
+      order: [['numeroEtudiant', 'ASC']]
+    });
+
+    // Aplatir l'objet pour exposer directement la promo et l'année semestrielle
+    const data = students.map(item => {
+      const plain = item.get({ plain: true });
+      const firstParcours = plain.parcoursEtudiantParSemestres[0] || {};
+      const resAnnee = plain.resultatAnneeEtudiants[0] || {};
+      // Récupération robuste du libellé (handle nom de propriété tronquée)
+      const anneeUnivNode = firstParcours.anneeUniversitaire || {};
+      const libelle =
+        anneeUnivNode.libelleAnneeUniversitaire ??
+        anneeUnivNode.libelleAnneeUni ??
+        null;
+      return {
+        ...plain,
+        // Assigner le libellé correctement
+        libelleAnneeUniversitaire: libelle,
+        nomPromotion: resAnnee.promotion?.nomPromotion || null
+      };
+    });
+
+    res.json({ success: true, count: data.length, data });
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
@@ -55,9 +121,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const [updated] = await ParcoursEtudiantParSemestre.update(req.body, {
-      where: { id: req.params.id },
-    });
+    const [updated] = await ParcoursEtudiantParSemestre.update(req.body, { where: { id: req.params.id } });
     if (updated) {
       const updatedItem = await ParcoursEtudiantParSemestre.findByPk(req.params.id);
       res.json(updatedItem);
@@ -71,9 +135,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const deleted = await ParcoursEtudiantParSemestre.destroy({
-      where: { id: req.params.id },
-    });
+    const deleted = await ParcoursEtudiantParSemestre.destroy({ where: { id: req.params.id } });
     if (deleted) {
       res.status(204).send();
     } else {

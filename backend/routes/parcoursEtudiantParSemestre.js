@@ -26,6 +26,72 @@ router.get('/', controller.getAll);
 
 /**
  * @swagger
+ * /api/parcoursetudiantparsemestre/etudiants:
+ *   get:
+ *     tags:
+ *       - ParcoursEtudiantParSemestre
+ *     summary: Liste les étudiants avec leurs parcours et résultats annuels
+ *     description: >
+ *       Renvoie la liste des étudiants, incluant :
+ *         - leurs parcours par semestre (Jointure sur ParcoursEtudiantParSemestre → Parcours, Semestre)
+ *         - leur résultat annuel (Jointure sur ResultatAnneeEtudiant pour récupérer promotionId et codeDecision)
+ *       Filtrage sur l’année universitaire via `anneeUniversitaireId`.
+ *     parameters:
+ *       - in: query
+ *         name: anneeUniversitaireId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'année universitaire à filtrer
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numéro de page (pagination)
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           maximum: 100
+ *         description: Nombre d’éléments par page (max 100)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Succès – objet contenant le nombre total et la liste des étudiants
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: integer
+ *                   example: 42
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/EtudiantWithParcoursResult'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalError'
+ */
+router.get(
+    '/etudiants',
+    authenticateToken,
+    checkRole('admin', 'etudes'),
+    controller.getStudentsByYear
+);
+
+/**
+ * @swagger
  * /api/parcoursetudiantparsemestre/{id}:
  *   get:
  *     summary: Récupère un enregistrement par ID

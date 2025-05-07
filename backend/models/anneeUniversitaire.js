@@ -30,7 +30,8 @@ module.exports = function(sequelize, DataTypes) {
     AnneeUniversitaire.hasMany(models.mobilite, { foreignKey: 'anneeuniversitaireid' });
     AnneeUniversitaire.hasMany(models.parcoursEtudiantParSemestre, { foreignKey: 'anneeUniversitaireId' });
     AnneeUniversitaire.hasMany(models.resultatAnneeEtudiant, { foreignKey: 'anneeUniversitaireId' });
-
+    AnneeUniversitaire.hasMany(models.stage, { foreignKey: 'anneeUniversitaireId' });
+    AnneeUniversitaire.hasMany(models.absence, { foreignKey: 'anneeUniversitaireId' });
   };
   
 

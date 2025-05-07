@@ -73,6 +73,69 @@ router.post(
 
 /**
  * @swagger
+ * /api/resultatanneeetudiants/resultatanneeetudiant:
+ *   get:
+ *     tags: [Historique Académique]
+ *     summary: Récupère l'historique académique d'un étudiant
+ *     parameters:
+ *       - in: query
+ *         name: numeroEtudiant
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Numéro de l'étudiant
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Historique récupéré
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       anneeUniversitaireId:
+ *                         type: integer
+ *                       anneeUniversitaire:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           libelle:
+ *                             type: string
+ *                       promotionId:
+ *                         type: integer
+ *                       promotion:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           libelle:
+ *                             type: string
+ *                       codeDecision:
+ *                         type: string
+ *       400:
+ *         description: Paramètre manquant
+ *       500:
+ *         description: Erreur serveur
+ */
+router.get(
+  '/resultatanneeetudiant',
+  authenticateToken,
+  checkRole('admin','etudes'),
+  controller.getHistoryByStudent
+);
+
+/**
+ * @swagger
  * /api/resultatanneeetudiants/{id}:
  *   get:
  *     summary: Obtenir un résultat par ID
