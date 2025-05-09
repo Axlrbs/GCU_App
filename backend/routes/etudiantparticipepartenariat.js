@@ -26,6 +26,19 @@ const router = express.Router();
  */
 router.get('/', controller.getAll);
 
+
+/**
+ * @swagger
+ * /api/etudiantparticipepartenariats/sans-etudiant:
+ *   get:
+ *     summary: Lister toutes les participations sans numeroEtudiant
+ *     tags: [EtudiantParticipePartenariat]
+ *     responses:
+ *       200:
+ *         description: Liste des participations
+ */
+router.get('/sans-etudiant', controller.getWithoutEtudiant);
+
 /**
  * @swagger
  * /api/etudiantparticipepartenariats:
@@ -41,7 +54,6 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - numeroEtudiant
  *               - partenaireId
  *               - naturePartenariatId
  *               - dateActivite
@@ -70,7 +82,6 @@ router.post(
   authenticateToken,
   checkRole('admin', 'etudes'),
   [
-    body('numeroEtudiant').isInt(),
     body('partenaireId').isInt(),
     body('naturePartenariatId').isInt(),
     body('dateActivite').notEmpty(),

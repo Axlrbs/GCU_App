@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
     numeroEtudiant: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'etudiant',
         key: 'numeroEtudiant'

@@ -12,18 +12,7 @@ exports.getAll = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
-    const nature = await db.naturePartenariat.findByPk(req.params.id, {
-      include: [
-        {
-          model: db.etudiantParticipePartenariat,
-          as: 'etudiantParticipePartenariats',
-          include: [
-            { model: db.etudiant, as: 'etudiant' },
-            { model: db.partenaire, as: 'partenaire' }
-          ]
-        }
-      ]
-    });
+    const nature = await db.naturePartenariat.findByPk(req.params.id);
 
     if (!nature) return res.status(404).json({ message: 'Nature de partenariat non trouvée' });
     res.json(nature);

@@ -3,14 +3,44 @@ const { validationResult } = require('express-validator');
 
 exports.getAll = async (req, res) => {
   try {
-    const participations = await db.etudiantParticipePartenariat.findAll({
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await db.etudiantParticipePartenariat.findAndCountAll({
       include: [
         { model: db.etudiant },
         { model: db.partenaire},
         { model: db.naturePartenariat }
+      ],
+      limit,
+      offset,
+      order: [['numeroEtudiant', 'ASC']]
+    });
+    res.json({
+      success: true,
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      data: rows
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
+exports.getWithoutEtudiant = async (req, res) => {
+  try {
+    const participations = await db.etudiantParticipePartenariat.findAll({
+      where: {
+        numeroEtudiant: null
+      },
+      include: [
+        { model: db.partenaire },
+        { model: db.naturePartenariat }
       ]
     });
-    res.json(participations);
+    res.json({ success: true, data: participations });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
