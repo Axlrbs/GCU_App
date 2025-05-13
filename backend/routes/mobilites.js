@@ -41,18 +41,15 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - numeroEtudiant
+ *               - numeroetudiant
  *               - typeMobiliteId
- *               - anneeUniversitaireId
- *               - etatId
+ *               - anneeuniversitaireid
  *             properties:
- *               numeroEtudiant:
+ *               numeroetudiant:
  *                 type: integer
  *               typeMobiliteId:
  *                 type: integer
- *               anneeUniversitaireId:
- *                 type: integer
- *               etatId:
+ *               anneeuniversitaireid:
  *                 type: integer
  *               commentaireMobilite:
  *                 type: string
@@ -65,10 +62,9 @@ router.post(
   authenticateToken,
   checkRole('admin', 'mobilites'),
   [
-    body('numeroEtudiant').isInt(),
+    body('numeroetudiant').isInt(),
     body('typeMobiliteId').isInt(),
-    body('anneeUniversitaireId').isInt(),
-    body('etatId').isInt()
+    body('anneeuniversitaireid').isInt()
   ],
   controller.create
 );
@@ -85,11 +81,92 @@ router.post(
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID de la mobilité à récupérer
  *     responses:
  *       200:
  *         description: Mobilité trouvée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     mobiliteId:
+ *                       type: integer
+ *                     numeroetudiant:
+ *                       type: integer
+ *                     typeMobiliteId:
+ *                       type: integer
+ *                     anneeuniversitaireid:
+ *                       type: integer
+ *                     commentaireMobilite:
+ *                       type: string
+ *                     etudiant:
+ *                       type: object
+ *                       properties:
+ *                         numeroEtudiant:
+ *                           type: integer
+ *                         nomEtudiant:
+ *                           type: string
+ *                         prenomEtudiant:
+ *                           type: string
+ *                     typeMobilite:
+ *                       type: object
+ *                       properties:
+ *                         typeMobiliteId:
+ *                           type: integer
+ *                         libelleTypeMobilite:
+ *                           type: string
+ *                     anneeUniversitaire:
+ *                       type: object
+ *                       properties:
+ *                         anneeUniversitaireId:
+ *                           type: integer
+ *                         libelleAnneeUniversitaire:
+ *                           type: string
+ *                     etatContratEtude:
+ *                       type: object
+ *                       properties:
+ *                         etatId:
+ *                           type: integer
+ *                         libelleEtat:
+ *                           type: string
+ *                     etatReleveNote:
+ *                       type: object
+ *                       properties:
+ *                         etatId:
+ *                           type: integer
+ *                         libelleEtat:
+ *                           type: string
+ *                     etablissement:
+ *                       type: object
+ *                       properties:
+ *                         etablissementId:
+ *                           type: integer
+ *                         nomEtablissement:
+ *                           type: string
+ *                         ville:
+ *                           type: object
+ *                           properties:
+ *                             villeId:
+ *                               type: integer
+ *                             nomVille:
+ *                               type: string
+ *                             pays:
+ *                               type: object
+ *                               properties:
+ *                                 paysId:
+ *                                   type: integer
+ *                                 nomPays:
+ *                                   type: string
  *       404:
  *         description: Mobilité non trouvée
+ *       500:
+ *         description: Erreur serveur
  */
 router.get('/:id', controller.getOne);
 

@@ -23,22 +23,61 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getOne = async (req, res) => {
-  const item = await db.mobilite.findByPk(req.params.id, {
-    include: [
-        { model: db.etudiant, as: 'etudiant' },
-        { model: db.typeMobilite },
-        { model: db.anneeUniversitaire },
-        { model: db.etat, as: 'etatContratEtude' },
-        { model: db.etat, as: 'etatReleveNote' },
-        { model: db.etablissement, include: [
-          {model: db.ville, include: [
-            {model: db.pays}
-          ]}
-        ]}
+  try {
+    const item = await db.mobilite.findByPk(req.params.id, {
+      include: [
+        { 
+          model: db.etudiant, 
+          as: 'etudiant',
+          attributes: ['numeroEtudiant', 'nomEtudiant', 'prenomEtudiant']
+        },
+        { 
+          model: db.typeMobilite,
+          attributes: ['typeMobiliteId', 'libelleTypeMobilite']
+        },
+        { 
+          model: db.anneeUniversitaire,
+          attributes: ['anneeUniversitaireId', 'libelleAnneeUniversitaire']
+        },
+        { 
+          model: db.etat,
+          as: 'etatContratEtude',
+          attributes: ['etatId', 'libelleEtat']
+        },
+        { 
+          model: db.etat,
+          as: 'etatReleveNote',
+          attributes: ['etatId', 'libelleEtat']
+        },
+        { 
+          model: db.etablissement,
+          attributes: ['etablissementId', 'nomEtablissement']
+        }
       ]
-  });
-  if (!item) return res.status(404).json({ message: 'Mobilité non trouvée' });
-  res.json(item);
+    });
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: 'Mobilité non trouvée'
+      });
+    }
+
+    // Log pour debug
+    console.log('Mobilité trouvée:', JSON.stringify(item, null, 2));
+
+    res.json({
+      success: true,
+      data: item
+    });
+  } catch (err) {
+    console.error('Erreur détaillée:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la récupération de la mobilité',
+      error: err.message
+    });
+  }
 };
 
 exports.create = async (req, res) => {

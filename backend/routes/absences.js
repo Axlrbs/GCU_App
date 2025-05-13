@@ -47,6 +47,7 @@ router.get('/', controller.getAll);
  *               - ecOuActivite
  *               - raisonAbsence
  *               - anneeUniversitaireId
+ *               - etatId
  *             properties:
  *               numeroetudiant:
  *                 type: integer
@@ -72,6 +73,9 @@ router.get('/', controller.getAll);
  *               anneeUniversitaireId:
  *                 type: integer
  *                 description: ID de l'année universitaire
+ *               etatId:
+ *                 type: integer
+ *                 description: ID de l'état de l'absence
  *     responses:
  *       201:
  *         description: Absence ajoutée avec succès
@@ -93,7 +97,8 @@ router.post(
     body('ecOuActivite').notEmpty().withMessage('L\'EC ou l\'activité est obligatoire'),
     body('raisonAbsence').notEmpty().withMessage('La raison est obligatoire'),
     body('anneeUniversitaireId').isInt().withMessage('L\'année universitaire doit être un entier'),
-    body('estjustifiee').isBoolean().optional().withMessage('estjustifiee doit être un booléen')
+    body('estjustifiee').isBoolean().optional().withMessage('estjustifiee doit être un booléen'),
+    body('etatId').isInt().withMessage('L\'état doit être un entier valide')
   ],
   controller.create
 );
@@ -143,6 +148,9 @@ router.post(
  *               anneeUniversitaireId:
  *                 type: integer
  *                 description: ID de l'année universitaire
+ *               etatId:
+ *                 type: integer
+ *                 description: ID de l'état de l'absence
  *     responses:
  *       200:
  *         description: Absence mise à jour avec succès
@@ -165,7 +173,8 @@ router.put('/:id',
     body('ecOuActivite').optional().notEmpty().withMessage('L\'EC ou l\'activité est obligatoire'),
     body('raisonAbsence').optional().notEmpty().withMessage('La raison est obligatoire'),
     body('anneeUniversitaireId').optional().isInt().withMessage('L\'année universitaire doit être un entier'),
-    body('estjustifiee').optional().isBoolean().withMessage('estjustifiee doit être un booléen')
+    body('estjustifiee').optional().isBoolean().withMessage('estjustifiee doit être un booléen'),
+    body('etatId').optional().isInt().withMessage('L\'état doit être un entier valide')
   ],
   controller.update
 );
