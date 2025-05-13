@@ -41,9 +41,9 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - libelleCertification
+ *               - intituleCertificationLangue
  *             properties:
- *               libelleCertification:
+ *               intituleCertificationLangue:
  *                 type: string
  *                 example: TOEIC
  *     responses:
@@ -53,8 +53,8 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'gestionnaire'),
-  [body('libelleCertification').notEmpty().withMessage('Le libellé est requis')],
+  checkRole('admin', 'etudes'),
+  [body('intituleCertificationLangue').notEmpty().withMessage('Le libellé est requis')],
   controller.create
 );
 

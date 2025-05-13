@@ -1,9 +1,13 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   const EPP = sequelize.define('etudiantParticipePartenariat', {
-    numeroEtudiant: {
+    idParticipation: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true
+    },
+    numeroEtudiant: {
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'etudiant',
@@ -12,7 +16,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     naturePartenariatId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false,
       references: {
         model: 'naturePartenariat',
@@ -21,7 +24,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     partenaireId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: true,
       references: {
         model: 'partenaire',
@@ -30,8 +32,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     dateActivite: {
       type: DataTypes.DATE,
-      primaryKey: true,
-      allowNull: false
+      allowNull: true
     },
     commentaireActivite: {
       type: DataTypes.STRING(255),

@@ -26,7 +26,6 @@ const router = express.Router();
  */
 router.get('/', controller.getAll);
 
-
 /**
  * @swagger
  * /api/etudiantparticipepartenariats/sans-etudiant:
@@ -38,6 +37,27 @@ router.get('/', controller.getAll);
  *         description: Liste des participations
  */
 router.get('/sans-etudiant', controller.getWithoutEtudiant);
+
+/**
+ * @swagger
+ * /api/etudiantparticipepartenariats/{id}:
+ *   get:
+ *     summary: Lister toutes les participations
+ *     tags: [EtudiantParticipePartenariat]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Liste des participations
+ */
+router.get('/:id', controller.findOne);
+
+
+
 
 /**
  * @swagger
@@ -87,6 +107,63 @@ router.post(
     body('dateActivite').notEmpty(),
   ],
   controller.create
+);
+
+
+/**
+ * @swagger
+ * /api/etudiantparticipepartenariats/{id}:
+ *   put:
+ *     summary: Modifier une participation
+ *     tags: [EtudiantParticipePartenariat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - partenaireId
+ *               - naturePartenariatId
+ *               - dateActivite
+ *             properties:
+ *               numeroEtudiant:
+ *                 type: integer
+ *               partenaireId:
+ *                 type: integer
+ *               naturePartenariatId:
+ *                 type: integer
+ *               dateActivite:
+ *                 type: string
+ *                 format: date
+ *               commentaireActivite:
+ *                 type: string
+ *               nbreJetonsAttribues:
+ *                 type: integer
+ *               aParticipe:
+ *                 type: boolean
+ *     responses:
+ *       201:
+ *         description: Participation enregistrée
+ */
+router.put(
+  '/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes'),
+  [
+    body('partenaireId').isInt(),
+    body('naturePartenariatId').isInt(),
+    body('dateActivite').notEmpty(),
+  ],
+  controller.update
 );
 
 /**

@@ -43,19 +43,13 @@ router.get('/', controller.getAll);
  *             required:
  *               - numeroEtudiant
  *               - certificationLangueId
- *               - dateObtention
  *             properties:
  *               numeroEtudiant:
  *                 type: integer
  *               certificationLangueId:
  *                 type: integer
- *               dateObtention:
- *                 type: string
- *                 format: date
  *               score:
  *                 type: integer
- *               niveauObtenu:
- *                 type: string
  *     responses:
  *       201:
  *         description: Certification enregistrée
@@ -66,8 +60,7 @@ router.post(
   checkRole('admin', 'etudes'),
   [
     body('numeroEtudiant').isInt(),
-    body('certificationLangueId').isInt(),
-    body('dateObtention').notEmpty()
+    body('certificationLangueId').isInt()
   ],
   controller.create
 );
@@ -92,5 +85,56 @@ router.post(
  */
 router.delete('/:id', authenticateToken,
   checkRole('admin', 'etudes'), controller.remove);
+
+/**
+ * @swagger
+ * /api/etudiantpassecertifications/{id}:
+ *   put:
+ *     summary: Mettre à jour une certification passée par un étudiant
+ *     tags: [EtudiantPasseCertifications]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la certification à mettre à jour
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - numeroEtudiant
+ *               - certificationLangueId
+ *             properties:
+ *               numeroEtudiant:
+ *                 type: integer
+ *                 description: Numéro de l'étudiant
+ *               certificationLangueId:
+ *                 type: integer
+ *                 description: ID de la certification de langue
+ *               score:
+ *                 type: integer
+ *                 description: Score obtenu à la certification
+ *     responses:
+ *       200:
+ *         description: Certification mise à jour avec succès
+ *       404:
+ *         description: Certification non trouvée
+ */
+router.put(
+  '/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes'),
+  [
+    body('numeroEtudiant').isInt(),
+    body('certificationLangueId').isInt()
+  ],
+  controller.update
+);
 
 module.exports = router;

@@ -1,9 +1,15 @@
 module.exports = function(sequelize, DataTypes) {
   const EPC = sequelize.define('etudiantPasseCertification', {
-    numeroEtudiant: {
+    etudiantcertifid: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true
+    },
+    numeroEtudiant: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: false,
       references: {
         model: 'etudiant',
         key: 'numeroEtudiant'
@@ -12,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
     certificationLangueId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
+      primaryKey: false,
       references: {
         model: 'certificationLangue',
         key: 'certificationLangueId'
