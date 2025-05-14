@@ -86,7 +86,7 @@ router.get('/', controller.getAll);
 router.get(
     '/etudiants',
     authenticateToken,
-    checkRole('admin', 'etudes'),
+    checkRole('admin', 'etudes','stages','mobilites'),
     controller.getStudentsByYear
 );
 

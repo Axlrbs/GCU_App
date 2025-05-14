@@ -104,6 +104,9 @@ router.get('/getEtablissementById/:id', controller.getEtablissementOne);
  *                 type: string
  *               statutetudiantid:
  *                 type: integer
+ *               etablissementId:
+ *                 type: integer
+ *                 description: ID de l'établissement principal de l'étudiant
  *     responses:
  *       201:
  *         description: Étudiant créé

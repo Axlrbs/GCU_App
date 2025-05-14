@@ -117,6 +117,27 @@ exports.getOne = async (req, res) => {
   }
 };
 
+exports.getTuteursByRole = async (req, res) => {
+  const { roleId } = req.params;
+
+  try {
+    const tuteurs = await db.tuteur.findAll({
+      where: { roleId },
+      include: [
+        {
+          model: db.role,
+          attributes: ['roleLibelle']
+        }
+      ]
+    });
+
+    res.json(tuteurs);
+  } catch (err) {
+    console.error('Erreur getTuteursByRole:', err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 exports.create = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

@@ -33,6 +33,7 @@ module.exports = function(sequelize, DataTypes) {
     Etablissement.belongsTo(models.ville, { foreignKey: 'villeId' });
     Etablissement.hasMany(models.etablissementorigineformation, { foreignKey: 'etablissementId' });
     Etablissement.hasMany(models.mobilite, { foreignKey: 'etablissementId' });
+    Etablissement.hasMany(models.etudiant, { foreignKey: 'etablissementId' });
   };
 
   return Etablissement;

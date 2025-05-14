@@ -41,9 +41,9 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - libelleCursus
+ *               - cursusLibelle
  *             properties:
- *               libelleCursus:
+ *               cursusLibelle:
  *                 type: string
  *                 example: Génie Civil Urbain
  *     responses:
@@ -53,8 +53,8 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin'),
-  [body('libelleCursus').notEmpty().withMessage('Le libellé est requis.')],
+  checkRole('admin','etudes'),
+  [body('cursusLibelle').notEmpty().withMessage('Le libellé est requis.')],
   controller.create
 );
 
@@ -98,14 +98,14 @@ router.get('/:id', controller.getOne);
  *           schema:
  *             type: object
  *             properties:
- *               libelleCursus:
+ *               cursusLibelle:
  *                 type: string
  *     responses:
  *       200:
  *         description: Cursus mis à jour
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin'), controller.update);
+  checkRole('admin','etudes'), controller.update);
 
 /**
  * @swagger
@@ -126,6 +126,6 @@ router.put('/:id', authenticateToken,
  *         description: Cursus supprimé
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin'), controller.remove);
+  checkRole('admin','etudes'), controller.remove);
 
 module.exports = router;

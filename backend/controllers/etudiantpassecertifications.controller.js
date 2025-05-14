@@ -19,10 +19,27 @@ exports.create = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ erreurs: errors.array() });
 
+  const { numeroEtudiant, certificationLangueId, scoreCertification } = req.body;
+
   try {
-    const newCertification = await db.etudiantPasseCertification.create(req.body);
+    // Vérifier si l'étudiant a déjà cette certification
+    const exist = await db.etudiantPasseCertification.findOne({
+      where: { numeroEtudiant, certificationLangueId }
+    });
+
+    if (exist) {
+      return res.status(400).json({ message: "Cette certification existe déjà pour cet étudiant." });
+    }
+
+    const newCertification = await db.etudiantPasseCertification.create({
+      numeroEtudiant,
+      certificationLangueId,
+      scoreCertification
+    });
+
     res.status(201).json(newCertification);
   } catch (err) {
+    console.error("Erreur serveur :", err.message);
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };

@@ -149,7 +149,8 @@ app.use('/api/utilisateurs', utilisateurRoutes);
 const vueParcoursEtudiantsRoutes = require('./routes/vueParcoursEtudiants'); 
 app.use('/api/vueparcoursetudiants', vueParcoursEtudiantsRoutes);
 
-
+const statutEtudiantRoutes = require('./routes/statutetudiants');
+app.use('/api/statutetudiants', statutEtudiantRoutes);
 
 // Lancer le serveur
 const PORT = process.env.PORT || 3000;

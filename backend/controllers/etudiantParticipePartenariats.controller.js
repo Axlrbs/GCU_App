@@ -11,16 +11,24 @@ const { Op } = require('sequelize');
      const offset = (page - 1) * limit;
 
      // construction du WHERE pour le search
-     const where = {};
-     if (search) {
-       where[Op.or] = [
-         { '$etudiant.nomEtudiant$':    { [Op.iLike]: `%${search}%` } },
-         { '$etudiant.prenomEtudiant$': { [Op.iLike]: `%${search}%` } },
-       ];
-     }
+     const where = {
+      numeroEtudiant: { [Op.not]: null }
+    };
+    
+    if (search) {
+      where[Op.and] = [
+        { numeroEtudiant: { [Op.not]: null } }, // nécessaire pour ne pas être écrasé
+        {
+          [Op.or]: [
+            { '$etudiant.nomEtudiant$':    { [Op.iLike]: `%${search}%` } },
+            { '$etudiant.prenomEtudiant$': { [Op.iLike]: `%${search}%` } },
+          ]
+        }
+      ];
+    }
 
      const { count, rows } = await db.etudiantParticipePartenariat.findAndCountAll({
-       where,
+      where,
        include: [
          { model: db.etudiant },
          { model: db.partenaire },
@@ -62,29 +70,14 @@ exports.getWithoutEtudiant = async (req, res) => {
 
 exports.create = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ erreurs: errors.array() });
-
-  const { numeroEtudiant, certificationLangueId, score } = req.body;
-
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ erreurs: errors.array() });
+  }
   try {
-    // Vérifier si l'étudiant a déjà cette certification
-    const exist = await db.etudiantPasseCertification.findOne({
-      where: { numeroEtudiant, certificationLangueId }
-    });
-
-    if (exist) {
-      return res.status(400).json({ message: "Cette certification existe déjà pour cet étudiant." });
-    }
-
-    const newCertification = await db.etudiantPasseCertification.create({
-      numeroEtudiant,
-      certificationLangueId,
-      scoreCertification: score
-    });
-
-    res.status(201).json(newCertification);
+    const newParticipation = await db.etudiantParticipePartenariat.create(req.body);
+    res.status(201).json(newParticipation);
   } catch (err) {
-    console.error("Erreur serveur :", err.message);
+    console.error('Erreur create participation:', err);
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };

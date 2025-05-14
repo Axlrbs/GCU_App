@@ -41,9 +41,9 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - nomFormation
+ *               - typeFormation
  *             properties:
- *               nomFormation:
+ *               typeFormation:
  *                 type: string
  *                 example: Génie Civil Urbain
  *     responses:
@@ -54,7 +54,7 @@ router.post(
   '/',
   authenticateToken,
   checkRole('admin', 'etudes'),
-  [body('nomFormation').notEmpty()],
+  [body('typeFormation').notEmpty()],
   controller.create
 );
 
@@ -98,7 +98,7 @@ router.get('/:id', controller.getOne);
  *           schema:
  *             type: object
  *             properties:
- *               nomFormation:
+ *               typeFormation:
  *                 type: string
  *     responses:
  *       200:

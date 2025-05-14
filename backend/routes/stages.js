@@ -140,4 +140,23 @@ router.put('/:id', authenticateToken,
 router.delete('/:id', authenticateToken,
   checkRole('admin', 'stages'), controller.remove);
 
+  /**
+ * @swagger
+ * /api/stages/tuteurs/role/{roleId}:
+ *   get:
+ *     summary: Obtenir les tuteurs par rôle
+ *     tags: [Stages]
+ *     parameters:
+ *       - in: path
+ *         name: roleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Liste des tuteurs
+ */
+router.get('/tuteurs/role/:roleId', controller.getTuteursByRole);
+
+
 module.exports = router;

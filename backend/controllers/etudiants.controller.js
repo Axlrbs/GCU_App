@@ -30,7 +30,8 @@ exports.getAll = async (req, res) => {
             ]
           } ,    
         { model: db.cursus },
-        { model: db.statutetudiant }
+        { model: db.statutetudiant },
+        { model: db.etablissement } // Ajout de l'établissement
       ],
       limit,
       offset,
@@ -66,7 +67,8 @@ exports.getOne = async (req, res) => {
       include: [
         { model: db.formation },
         { model: db.cursus },
-        { model: db.statutetudiant }
+        { model: db.statutetudiant },
+        { model: db.etablissement } // Ajout de l'établissement
       ]
     });
   if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
@@ -88,7 +90,8 @@ exports.getEtablissementOne = async (req, res) => {
               ]
             }
           ]
-        }       
+        },
+        { model: db.etablissement } // Ajout de l'établissement direct
       ]            
     });
   if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
