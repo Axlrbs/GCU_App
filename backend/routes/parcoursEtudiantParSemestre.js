@@ -16,11 +16,29 @@ const { authenticateToken, checkRole } = require('../middlewares/auth');
  * @swagger
  * /api/parcoursetudiantparsemestre:
  *   get:
- *     summary: Liste tous les parcours par semestre
+ *     summary: Liste tous les parcours par semestre (si sans paramètre) ou récupère un parcours spécifique (avec paramètres)
  *     tags: [Parcours Étudiant Par Semestre]
+ *     parameters:
+ *       - in: query
+ *         name: numeroEtudiant
+ *         schema:
+ *           type: integer
+ *         description: Numéro de l'étudiant
+ *       - in: query
+ *         name: anneeUniversitaireId
+ *         schema:
+ *           type: integer
+ *         description: ID de l'année universitaire
+ *       - in: query
+ *         name: semestreId
+ *         schema:
+ *           type: integer
+ *         description: ID du semestre
  *     responses:
  *       200:
- *         description: Liste récupérée avec succès
+ *         description: Liste récupérée avec succès ou parcours spécifique trouvé
+ *       404:
+ *         description: Parcours introuvable avec les paramètres spécifiés
  */
 router.get('/', controller.getAll);
 
@@ -35,7 +53,7 @@ router.get('/', controller.getAll);
  *       Renvoie la liste des étudiants, incluant :
  *         - leurs parcours par semestre (Jointure sur ParcoursEtudiantParSemestre → Parcours, Semestre)
  *         - leur résultat annuel (Jointure sur ResultatAnneeEtudiant pour récupérer promotionId et codeDecision)
- *       Filtrage sur l’année universitaire via `anneeUniversitaireId`.
+ *       Filtrage sur l'année universitaire via `anneeUniversitaireId`.
  *     parameters:
  *       - in: query
  *         name: anneeUniversitaireId
@@ -57,7 +75,7 @@ router.get('/', controller.getAll);
  *           type: integer
  *           default: 10
  *           maximum: 100
- *         description: Nombre d’éléments par page (max 100)
+ *         description: Nombre d'éléments par page (max 100)
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -196,5 +214,68 @@ router.put('/:id', authenticateToken,
  */
 router.delete('/:id',authenticateToken,
     checkRole('admin', 'etudes'), controller.remove);
+
+// --- routes/parcoursEtudiantParSemestre.js ---
+/**
+ * @swagger
+ * /api/parcoursetudiantparsemestre/etudiant/{numeroEtudiant}/annee/{anneeUniversitaireId}/semestre/{semestreId}:
+ *   put:
+ *     summary: Met à jour le parcours d'un étudiant pour un semestre donné
+ *     tags: [Parcours Étudiant Par Semestre]
+ *     parameters:
+ *       - in: path
+ *         name: numeroEtudiant
+ *         schema: { type: integer }
+ *         required: true
+ *       - in: path
+ *         name: anneeUniversitaireId
+ *         schema: { type: integer }
+ *         required: true
+ *       - in: path
+ *         name: semestreId
+ *         schema: { type: integer }
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - parcoursId
+ *             properties:
+ *               parcoursId:
+ *                 type: integer
+ *                 description: ID du parcours (obligatoire)
+ *     responses:
+ *       200:
+ *         description: Parcours mis à jour
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Parcours mis à jour avec succès"
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Requête invalide (parcoursId manquant ou invalide)
+ *       404:
+ *         description: Parcours introuvable pour cet étudiant/année/semestre
+ *       500:
+ *         description: Erreur serveur
+ */
+router.put(
+    '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId/semestre/:semestreId',
+    authenticateToken,
+    checkRole('admin', 'etudes'),
+    controller.updateByCompositeKey
+  );
+  
 
 module.exports = router;

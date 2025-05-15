@@ -145,3 +145,192 @@ exports.remove = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
 };
+
+// --- controllers/parcoursEtudiantParSemestre.controller.js ---
+
+// Mise à jour par composite key : (numeroEtudiant, anneeUniversitaireId, semestreId)
+exports.updateByCompositeKey = async (req, res) => {
+  const { numeroEtudiant, anneeUniversitaireId, semestreId } = req.params;
+  
+  // Debug log
+  console.log('Request body (PUT Parcours):', JSON.stringify(req.body));
+  
+  try {
+    // On cherche directement par numéro Etudiant + année universitaire + semestre
+    const record = await ParcoursEtudiantParSemestre.findOne({
+      where: { 
+        numeroEtudiant: parseInt(numeroEtudiant, 10), 
+        anneeUniversitaireId: parseInt(anneeUniversitaireId, 10),
+        semestreId: parseInt(semestreId, 10)
+      }
+    });
+    
+    if (!record) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Parcours introuvable pour cet étudiant/année/semestre' 
+      });
+    }
+    
+    // Vérifier que parcoursId est présent car obligatoire
+    if (req.body.parcoursId === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: 'Le champ parcoursId est obligatoire'
+      });
+    }
+    
+    // Valider et préparer les données à mettre à jour
+    const dataToUpdate = {};
+    
+    // Champ obligatoire: parcoursId
+    dataToUpdate.parcoursId = parseInt(req.body.parcoursId, 10);
+    
+    // Vérifier que la valeur est bien numérique
+    if (isNaN(dataToUpdate.parcoursId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Le parcoursId doit être un nombre valide'
+      });
+    }
+    
+    // Afficher l'état avant mise à jour pour debugging
+    console.log('AVANT mise à jour - Parcours:', {
+      parcoursId: record.parcoursId
+    });
+    
+    // Mise à jour et récupération du résultat
+    await record.update(dataToUpdate);
+    console.log('APRÈS mise à jour - Parcours:', {
+      parcoursId: record.parcoursId
+    });
+    
+    // Récupérer l'enregistrement mis à jour avec les relations
+    const updatedRecord = await ParcoursEtudiantParSemestre.findOne({
+      where: { 
+        numeroEtudiant: parseInt(numeroEtudiant, 10), 
+        anneeUniversitaireId: parseInt(anneeUniversitaireId, 10),
+        semestreId: parseInt(semestreId, 10)
+      },
+      include: [
+        { model: db.etudiant },
+        { model: db.parcours },
+        { model: db.semestre },
+        { model: db.anneeUniversitaire }
+      ]
+    });
+    
+    res.json({
+      success: true,
+      message: 'Parcours mis à jour avec succès',
+      data: updatedRecord
+    });
+  } catch (err) {
+    console.error('Erreur lors de la mise à jour du parcours:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Erreur serveur', 
+      error: err.message
+    });
+  }
+};
+
+/**
+ * GET /api/parcoursetudiantparsemestre?numeroEtudiant=X&anneeUniversitaireId=Y&semestreId=Z
+ * Récupère le parcours spécifique d'un étudiant pour un semestre et une année donnés
+ * via query parameters.
+ */
+exports.getByCompositeKeyQuery = async (req, res) => {
+  try {
+    const { numeroEtudiant, anneeUniversitaireId, semestreId } = req.query;
+    
+    // Vérifier que tous les paramètres requis sont présents
+    if (!numeroEtudiant || !anneeUniversitaireId || !semestreId) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Les paramètres numeroEtudiant, anneeUniversitaireId et semestreId sont requis' 
+      });
+    }
+    
+    // Rechercher l'enregistrement correspondant
+    const record = await ParcoursEtudiantParSemestre.findOne({
+      where: { 
+        numeroEtudiant: parseInt(numeroEtudiant, 10), 
+        anneeUniversitaireId: parseInt(anneeUniversitaireId, 10), 
+        semestreId: parseInt(semestreId, 10) 
+      },
+      include: [
+        { model: db.etudiant },
+        { model: db.parcours },
+        { model: db.semestre },
+        { model: db.anneeUniversitaire }
+      ]
+    });
+    
+    if (!record) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Parcours introuvable pour cet étudiant/année/semestre' 
+      });
+    }
+    
+    return res.json({
+      success: true,
+      data: record
+    });
+  } catch (err) {
+    console.error('Erreur lors de la récupération du parcours:', err);
+    return res.status(500).json({ 
+      success: false,
+      message: 'Erreur serveur', 
+      error: err.message 
+    });
+  }
+};
+ 
+// controllers/parcoursEtudiantParSemestre.controller.js
+
+exports.getAll = async (req, res) => {
+  try {
+    const page  = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+    const offset = (page - 1) * limit;
+
+    // Construire le filtre en fonction des query params
+    const where = {};
+    if (req.query.numeroEtudiant) {
+      where.numeroEtudiant = parseInt(req.query.numeroEtudiant, 10);
+    }
+    if (req.query.anneeUniversitaireId) {
+      where.anneeUniversitaireId = parseInt(req.query.anneeUniversitaireId, 10);
+    }
+    if (req.query.semestreId) {
+      where.semestreId = parseInt(req.query.semestreId, 10);
+    }
+
+    const { count, rows } = await ParcoursEtudiantParSemestre.findAndCountAll({
+      where,
+      include: [
+        { model: db.etudiant },
+        { model: db.parcours },
+        { model: db.semestre },
+        { model: db.anneeUniversitaire }
+      ],
+      limit,
+      offset,
+      order: [['numeroEtudiant', 'ASC']]
+    });
+
+    res.json({
+      success: true,
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      data: rows
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};
+

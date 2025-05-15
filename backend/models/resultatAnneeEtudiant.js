@@ -1,10 +1,15 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   const RAE = sequelize.define('resultatAnneeEtudiant', {
-    anneeUniversitaireId: {
+    resultatId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
+    },
+    anneeUniversitaireId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'anneeUniversitaire',
         key: 'anneeUniversitaireId'
@@ -13,7 +18,6 @@ module.exports = function(sequelize, DataTypes) {
     numeroEtudiant: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: 'etudiant',
         key: 'numeroEtudiant'
@@ -22,7 +26,6 @@ module.exports = function(sequelize, DataTypes) {
     promotionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: 'promotion',
         key: 'promotionId'

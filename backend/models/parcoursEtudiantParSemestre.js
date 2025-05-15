@@ -1,10 +1,14 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   const PAE = sequelize.define('parcoursEtudiantParSemestre', {
-    anneeUniversitaireId: {
+    parcoursetudiantid: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+    },
+    anneeUniversitaireId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'anneeUniversitaire',
         key: 'anneeUniversitaireId'
@@ -12,7 +16,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     numeroEtudiant: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false,
       references: {
         model: 'etudiant',
@@ -21,7 +24,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     parcoursId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: true,
       references: {
         model: 'parcours',
@@ -30,7 +32,6 @@ module.exports = function(sequelize, DataTypes) {
     },
     semestreId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false,
       references: {
         model: 'semestre',

@@ -102,6 +102,7 @@ router.post(
  *                   items:
  *                     type: object
  *                     properties:
+ *                       resultatId:
  *                       anneeUniversitaireId:
  *                         type: integer
  *                       anneeUniversitaire:
@@ -130,7 +131,7 @@ router.post(
 router.get(
   '/resultatanneeetudiant',
   authenticateToken,
-  checkRole('admin','etudes'),
+  checkRole('admin','etudes','stages','mobilites'),
   controller.getHistoryByStudent
 );
 
@@ -174,10 +175,8 @@ router.get('/:id', controller.getOne);
  *           schema:
  *             type: object
  *             properties:
- *               moyenne:
- *                 type: number
  *               decisionJuryId:
- *                 type: integer
+ *                 type: string
  *     responses:
  *       200:
  *         description: Résultat mis à jour
@@ -205,5 +204,142 @@ router.put('/:id', authenticateToken,
  */
 router.delete('/:id', authenticateToken,
   checkRole('admin', 'etudes'), controller.remove);
+
+// --- resultatanneeetudiants.js (router) ---
+/**
+ * @swagger
+ * /api/resultatanneeetudiants/etudiant/{numeroEtudiant}/annee/{anneeUniversitaireId}:
+ *   put:
+ *     summary: Modifier un résultat annuel par numéro étudiant et année universitaire
+ *     tags: [ResultatsAnneeEtudiant]
+ *     parameters:
+ *       - in: path
+ *         name: numeroEtudiant
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: anneeUniversitaireId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - promotionId
+ *             properties:
+ *               promotionId:
+ *                 type: integer
+ *                 description: ID de la promotion (obligatoire)
+ *               codeDecision:
+ *                 type: string
+ *                 description: Code de la décision du jury (optionnel)
+ *               dateDecisionJurys:
+ *                 type: string
+ *                 format: date
+ *                 description: Date de la décision du jury au format YYYY-MM-DD (optionnel)
+ *     responses:
+ *       200:
+ *         description: Résultat mis à jour
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Résultat mis à jour avec succès"
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Requête invalide (promotionId manquant ou invalide)
+ *       404:
+ *         description: Résultat non trouvé
+ *       500:
+ *         description: Erreur serveur
+ */
+router.put(
+  '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
+  authenticateToken,
+  checkRole('admin', 'etudes'),
+  controller.updateByCompositeKey
+);
+
+/**
+ * @swagger
+ * /api/resultatanneeetudiants/resultatanneeetudiant/etudiant/{numeroEtudiant}/annee/{anneeUniversitaireId}:
+ *   get:
+ *     summary: Récupérer un résultat annuel spécifique par numéro d'étudiant et année universitaire
+ *     tags: [ResultatsAnneeEtudiant]
+ *     parameters:
+ *       - in: path
+ *         name: numeroEtudiant
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Numéro de l'étudiant
+ *       - in: path
+ *         name: anneeUniversitaireId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'année universitaire
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Résultat trouvé
+ *       404:
+ *         description: Résultat non trouvé
+ */
+router.get(
+  '/resultatanneeetudiant/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'stages', 'mobilites'),
+  controller.getByCompositeKey
+);
+
+/**
+ * @swagger
+ * /api/resultatanneeetudiants/etudiant/{numeroEtudiant}/annee/{anneeUniversitaireId}:
+ *   get:
+ *     summary: Récupérer un résultat annuel spécifique par numéro d'étudiant et année universitaire (route directe)
+ *     tags: [ResultatsAnneeEtudiant]
+ *     parameters:
+ *       - in: path
+ *         name: numeroEtudiant
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Numéro de l'étudiant
+ *       - in: path
+ *         name: anneeUniversitaireId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'année universitaire
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Résultat trouvé
+ *       404:
+ *         description: Résultat non trouvé
+ */
+router.get(
+  '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'stages', 'mobilites'),
+  controller.getByCompositeKey
+);
 
 module.exports = router;
