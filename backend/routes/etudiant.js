@@ -28,22 +28,15 @@ router.get('/', controller.getAll);
 
 /**
  * @swagger
- * /api/etudiants/{id}:
+ * /api/etudiants/non-diplomes:
  *   get:
- *     summary: Récupère un étudiant par ID
+ *     summary: Liste tous les étudiants non diplômés
  *     tags: [Etudiants]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de l'étudiant
- *         schema:
- *           type: integer
  *     responses:
  *       200:
- *         description: Étudiant trouvé
+ *         description: Liste des étudiants non diplômés
  */
-router.get('/:id', controller.getOne);
+router.get('/non-diplomes', controller.getNonDiplomes);
 
 /**
  * @swagger
@@ -63,6 +56,25 @@ router.get('/:id', controller.getOne);
  *         description: Étudiant trouvé
  */
 router.get('/getEtablissementById/:id', controller.getEtablissementOne);
+
+/**
+ * @swagger
+ * /api/etudiants/{id}:
+ *   get:
+ *     summary: Récupère un étudiant par ID
+ *     tags: [Etudiants]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de l'étudiant
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Étudiant trouvé
+ */
+router.get('/:id', controller.getOne);
 
 /**
  * @swagger

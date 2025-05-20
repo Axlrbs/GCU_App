@@ -41,12 +41,12 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - nomEntreprise
+ *               - raisonSociale
  *               - villeId
  *             properties:
- *               nomEntreprise:
+ *               raisonSociale:
  *                 type: string
- *               secteurActivite:
+ *               contactEntreprise:
  *                 type: string
  *               villeId:
  *                 type: integer
@@ -59,7 +59,7 @@ router.post(
   authenticateToken,
   checkRole('admin', 'stages'),
   [
-    body('nomEntreprise').notEmpty(),
+    body('raisonSociale').notEmpty(),
     body('villeId').isInt()
   ],
   controller.create
@@ -105,9 +105,9 @@ router.get('/:id', controller.getOne);
  *           schema:
  *             type: object
  *             properties:
- *               nomEntreprise:
+ *               raisonSociale:
  *                 type: string
- *               secteurActivite:
+ *               contactEntreprise:
  *                 type: string
  *               villeId:
  *                 type: integer

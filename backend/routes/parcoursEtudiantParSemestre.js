@@ -110,6 +110,60 @@ router.get(
 
 /**
  * @swagger
+ * /api/parcoursetudiantparsemestre/etudiants/liste:
+ *   get:
+ *     summary: Liste à plat des parcours étudiants par semestre
+ *     description: >
+ *       Retourne une liste à plat des parcours étudiants par semestre,
+ *       triée par année universitaire décroissante puis par semestre.
+ *     tags: [Parcours Étudiant Par Semestre]
+ *     responses:
+ *       200:
+ *         description: Liste des parcours étudiants
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: integer
+ *                   example: 42
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       parcoursetudiantid:
+ *                         type: integer
+ *                       numeroEtudiant:
+ *                         type: integer
+ *                       nomEtudiant:
+ *                         type: string
+ *                       prenomEtudiant:
+ *                         type: string
+ *                       parcoursId:
+ *                         type: integer
+ *                       libelleParcours:
+ *                         type: string
+ *                       semestreId:
+ *                         type: integer
+ *                       libelleSemestre:
+ *                         type: string
+ *                       anneeUniversitaireId:
+ *                         type: integer
+ *                       libelleAnneeUniversitaire:
+ *                         type: string
+ */
+router.get(
+  '/etudiants/liste',
+  controller.getStudents
+);
+
+/**
+ * @swagger
  * /api/parcoursetudiantparsemestre/{id}:
  *   get:
  *     summary: Récupère un enregistrement par ID

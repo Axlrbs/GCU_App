@@ -3,53 +3,60 @@ const { validationResult } = require('express-validator');
 
 const { Op } = require('sequelize');
 
- exports.getAll = async (req, res) => {
-   try {
-     const page   = parseInt(req.query.page)  || 1;
-     const limit  = Math.min(parseInt(req.query.limit) || 10, 100);
-     const search = req.query.search || '';
-     const offset = (page - 1) * limit;
+exports.getAll = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
+    const offset = (page - 1) * limit;
 
-     // construction du WHERE pour le search
-     const where = {
-      numeroEtudiant: { [Op.not]: null }
-    };
-    
-    if (search) {
-      where[Op.and] = [
-        { numeroEtudiant: { [Op.not]: null } }, // nécessaire pour ne pas être écrasé
-        {
-          [Op.or]: [
-            { '$etudiant.nomEtudiant$':    { [Op.iLike]: `%${search}%` } },
-            { '$etudiant.prenomEtudiant$': { [Op.iLike]: `%${search}%` } },
-          ]
-        }
-      ];
+    const naturePartenariatId = req.query.naturePartenariatId ? parseInt(req.query.naturePartenariatId) : null;
+
+    const whereConditions = {};
+    if (naturePartenariatId) {
+      whereConditions.naturePartenariatId = naturePartenariatId;
     }
 
-     const { count, rows } = await db.etudiantParticipePartenariat.findAndCountAll({
-      where,
-       include: [
-         { model: db.etudiant },
-         { model: db.partenaire },
-         { model: db.naturePartenariat }
-       ],
-       limit,
-       offset,
-       order: [['idParticipation', 'DESC']]   // on met les plus récents en page 1
-     });
+    const { count, rows } = await db.etudiantParticipePartenariat.findAndCountAll({
+      where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      include: [
+        { 
+          model: db.etudiant,
+          attributes: ['numeroEtudiant', 'nomEtudiant', 'prenomEtudiant', 'mailEtudiant']
+        },
+        { 
+          model: db.partenaire,
+          attributes: ['partenaireId', 'nomPartenaire', 'secteurPartenaire']
+        },
+        { 
+          model: db.naturePartenariat,
+          attributes: ['naturePartenariatId', 'libelleNaturePartenariat']
+        }
+      ],
+      limit,
+      offset,
+      order: [
+        [{ model: db.etudiant, as: 'etudiant' }, 'nomEtudiant', 'ASC'],
+        ['dateActivite', 'DESC']
+      ]
+    });
 
-     res.json({
-       success:     true,
-       totalItems:  count,
-       totalPages:  Math.ceil(count / limit),
-       currentPage: page,
-       data:        rows
-     });
-   } catch (err) {
-     res.status(500).json({ message: 'Erreur serveur', error: err.message });
-   }
- };
+    res.json({
+      success: true,
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      data: rows
+    });
+  } catch (error) {
+    console.error('Erreur dans getAll:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Erreur serveur',
+      error: error.message,
+      details: error.original?.message || null
+    });
+  }
+};
 
 exports.getWithoutEtudiant = async (req, res) => {
   try {
@@ -82,8 +89,6 @@ exports.create = async (req, res) => {
   }
 };
 
-
-
 exports.update = async (req, res) => {
   try {
     const participation = await db.etudiantParticipePartenariat.findByPk(req.params.id);
@@ -93,7 +98,7 @@ exports.update = async (req, res) => {
 
     // si on a reçu un tableau => multi‐affectation
     if (Array.isArray(numeroEtudiant)) {
-      // supprime l’ancienne entrée
+      // supprime l'ancienne entrée
       await participation.destroy();
       // recrée une ligne par étudiant sélectionné
       const creations = numeroEtudiant.map(num => 

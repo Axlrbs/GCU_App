@@ -41,9 +41,9 @@ router.get('/', controller.getAll);
  *           schema:
  *             type: object
  *             required:
- *               - libellePromotion
+ *               - nomPromotion
  *             properties:
- *               libellePromotion:
+ *               nomPromotion:
  *                 type: string
  *                 example: Promo 2023-2026
  *     responses:
@@ -54,7 +54,7 @@ router.post(
   '/',
   authenticateToken,
   checkRole('admin'),
-  [body('libellePromotion').notEmpty().withMessage('Le libellé est requis.')],
+  [body('nomPromotion').notEmpty().withMessage('Le libellé est requis.')],
   controller.create
 );
 
@@ -98,7 +98,7 @@ router.get('/:id', controller.getOne);
  *           schema:
  *             type: object
  *             properties:
- *               libellePromotion:
+ *               nomPromotion:
  *                 type: string
  *     responses:
  *       200:
