@@ -84,7 +84,7 @@ exports.update = async (req, res) => {
     await certification.update({
       numeroEtudiant: req.body.numeroEtudiant,
       certificationLangueId: req.body.certificationLangueId,
-      scoreCertification: req.body.score
+      scoreCertification: req.body.scoreCertification
     });
 
     console.log('Mise à jour effectuée');
@@ -106,6 +106,25 @@ exports.update = async (req, res) => {
   } catch (err) {
     console.error('ERREUR:', err.message);
     console.error('Stack:', err.stack);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
+exports.getOne = async (req, res) => {
+  try {
+    const certification = await db.etudiantPasseCertification.findByPk(req.params.id, {
+      include: [
+        { model: db.etudiant, as: 'etudiant' },
+        { model: db.certificationLangue, as: 'certificationLangue' }
+      ]
+    });
+
+    if (!certification) {
+      return res.status(404).json({ message: 'Certification non trouvée' });
+    }
+
+    res.json(certification);
+  } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };

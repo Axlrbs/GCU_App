@@ -72,3 +72,33 @@ exports.remove = async (req, res) => {
     res.status(500).json({ message: 'Erreur suppression', error: error.message });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    console.log(req.user);
+    const userId = req.user.utilisateurId || req.user.id; // le middleware JWT doit injecter req.user.id
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword)
+      return res.status(400).json({ message: 'Les deux mots de passe sont obligatoires.' });
+
+    const user = await Utilisateur.findByPk(userId);
+    if (!user) return res.status(404).json({ message: 'Utilisateur introuvable.' });
+
+    const match = await bcrypt.compare(oldPassword, user.motDePasse);
+    if (!match)
+      return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
+
+    // Optionnel : force un niveau de sécurité minimum sur le nouveau mot de passe
+    if (newPassword.length < 8)
+      return res.status(400).json({ message: 'Le nouveau mot de passe doit contenir au moins 8 caractères.' });
+
+    user.motDePasse = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: 'Mot de passe changé avec succès' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};

@@ -15,13 +15,26 @@ exports.getAll = async (req, res) => {
     if (naturePartenariatId) {
       whereConditions.naturePartenariatId = naturePartenariatId;
     }
+    const search = req.query.search || '';
+
+    if (search) {
+      whereConditions[Op.or] = [
+        { '$etudiant.nomEtudiant$': { [Op.iLike]: `%${search}%` } },
+        { '$etudiant.prenomEtudiant$': { [Op.iLike]: `%${search}%` } }
+      ];
+    }
+
+    const estdiplome = req.query.estdiplome;
+    if (estdiplome !== undefined) {
+      whereConditions['$etudiant.estdiplome$'] = estdiplome === 'true';
+    }
 
     const { count, rows } = await db.etudiantParticipePartenariat.findAndCountAll({
-      where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      where: (Object.keys(whereConditions).length > 0 || Object.getOwnPropertySymbols(whereConditions).length > 0)? whereConditions : undefined,
       include: [
         { 
           model: db.etudiant,
-          attributes: ['numeroEtudiant', 'nomEtudiant', 'prenomEtudiant', 'mailEtudiant']
+          attributes: ['numeroEtudiant', 'nomEtudiant', 'prenomEtudiant', 'mailEtudiant', 'estdiplome']
         },
         { 
           model: db.partenaire,

@@ -48,7 +48,7 @@ router.get('/', controller.getAll);
  *                 type: integer
  *               certificationLangueId:
  *                 type: integer
- *               score:
+ *               scoreCertification:
  *                 type: integer
  *     responses:
  *       201:
@@ -117,7 +117,7 @@ router.delete('/:id', authenticateToken,
  *               certificationLangueId:
  *                 type: integer
  *                 description: ID de la certification de langue
- *               score:
+ *               scoreCertification:
  *                 type: integer
  *                 description: Score obtenu à la certification
  *     responses:
@@ -136,5 +136,26 @@ router.put(
   ],
   controller.update
 );
+
+/**
+ * @swagger
+ * /api/etudiantpassecertifications/{id}:
+ *   get:
+ *     summary: Récupérer une certification spécifique
+ *     tags: [EtudiantPasseCertifications]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la certification à récupérer
+ *     responses:
+ *       200:
+ *         description: Détails de la certification
+ *       404:
+ *         description: Certification non trouvée
+ */
+router.get('/:id', controller.getOne);
 
 module.exports = router;

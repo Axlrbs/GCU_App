@@ -45,6 +45,59 @@ router.get('/', authenticateToken,
 router.get('/:id', authenticateToken,
     checkRole('admin'),controller.getById);
 
+    /**
+ * @swagger
+ * /api/utilisateurs/change-password:
+ *   post:
+ *     summary: Changer le mot de passe de l'utilisateur connecté
+ *     description: Permet à l'utilisateur connecté de modifier son mot de passe en fournissant l'ancien et le nouveau mot de passe.
+ *     tags:
+ *       - Utilisateurs
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 description: Ancien mot de passe (obligatoire)
+ *               newPassword:
+ *                 type: string
+ *                 description: Nouveau mot de passe (obligatoire)
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *     responses:
+ *       200:
+ *         description: Mot de passe modifié avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Mot de passe changé avec succès
+ *       400:
+ *         description: Ancien mot de passe incorrect ou données invalides
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Ancien mot de passe incorrect
+ *       401:
+ *         description: Utilisateur non authentifié
+ */
+router.post('/change-password', authenticateToken,
+        checkRole('admin','etudes','mobilites','stages'),controller.changePassword);
+
 /**
  * @swagger
  * /api/utilisateurs:
@@ -71,7 +124,7 @@ router.get('/:id', authenticateToken,
  *                 type: string
  *               role:
  *                 type: string
- *                 enum: [admin, etudes, mobilites]
+ *                 enum: [admin, etudes, mobilites, stages]
  *     responses:
  *       201:
  *         description: Créé avec succès

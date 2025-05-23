@@ -130,8 +130,6 @@ router.post(
  */
 router.get(
   '/resultatanneeetudiant',
-  authenticateToken,
-  checkRole('admin','etudes','stages','mobilites'),
   controller.getHistoryByStudent
 );
 
@@ -283,13 +281,11 @@ router.put(
  *     parameters:
  *       - in: path
  *         name: numeroEtudiant
- *         required: true
  *         schema:
  *           type: integer
  *         description: Numéro de l'étudiant
  *       - in: path
  *         name: anneeUniversitaireId
- *         required: true
  *         schema:
  *           type: integer
  *         description: ID de l'année universitaire
@@ -317,13 +313,11 @@ router.get(
  *     parameters:
  *       - in: path
  *         name: numeroEtudiant
- *         required: true
  *         schema:
  *           type: integer
  *         description: Numéro de l'étudiant
  *       - in: path
  *         name: anneeUniversitaireId
- *         required: true
  *         schema:
  *           type: integer
  *         description: ID de l'année universitaire
@@ -337,8 +331,6 @@ router.get(
  */
 router.get(
   '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
-  authenticateToken,
-  checkRole('admin', 'etudes', 'stages', 'mobilites'),
   controller.getByCompositeKey
 );
 

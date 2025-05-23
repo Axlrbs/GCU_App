@@ -35,7 +35,14 @@ exports.create = async (req, res) => {
 
   try {
     const newAbsence = await db.absence.create(req.body);
-    res.status(201).json(newAbsence);
+    const absenceComplete = await db.absence.findOne({
+      where: { absenceId: newAbsence.absenceId },
+      include: [
+        { model: db.etudiant, as: 'etudiant' },
+        { model: db.anneeUniversitaire, as: 'anneeUniversitaire' }
+      ]
+    });
+    res.status(201).json(absenceComplete);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
@@ -104,7 +111,7 @@ exports.getById = async (req, res) => {
 exports.getAllByYear = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100 comme dans getAll
+    const limit = Math.min(parseInt(req.query.limit) || 10, 1000); // Max 100 comme dans getAll
     const offset = (page - 1) * limit;
     const anneeUniversitaireId = parseInt(req.query.anneeUniversitaireId);
 
