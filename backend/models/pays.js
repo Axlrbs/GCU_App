@@ -18,6 +18,7 @@ module.exports = function(sequelize, DataTypes) {
 
   Pays.associate = function(models) {
     Pays.hasMany(models.ville, { foreignKey: 'codePays' });
+    Pays.hasMany(models.nationalite, { foreignKey: 'codePays' });
   };
 
   return Pays;

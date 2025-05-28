@@ -72,7 +72,8 @@ exports.getAll = async (req, res) => {
           },    
         { model: db.cursus },
         { model: db.statutetudiant },
-        { model: db.etablissement }
+        { model: db.etablissement },
+        { model: db.nationalite, include: [{ model: db.pays }] }
       ],
       limit,
       offset,
@@ -140,7 +141,8 @@ exports.getOne = async (req, res) => {
         { model: db.formation       },   
         { model: db.cursus          },
         { model: db.statutetudiant  },
-        { model: db.etablissement   }
+        { model: db.etablissement   },
+        { model: db.nationalite, include: [{ model: db.pays }] }
       ]
     });
 

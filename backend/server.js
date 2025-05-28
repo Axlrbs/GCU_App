@@ -152,6 +152,12 @@ app.use('/api/vueparcoursetudiants', vueParcoursEtudiantsRoutes);
 const statutEtudiantRoutes = require('./routes/statutetudiants');
 app.use('/api/statutetudiants', statutEtudiantRoutes);
 
+const laboratoireRoutes = require('./routes/laboratoires'); 
+app.use('/api/laboratoires', laboratoireRoutes);
+
+const nationaliteRoutes = require('./routes/nationalites');
+app.use('/api/nationalites', nationaliteRoutes);
+
 // Lancer le serveur
 const PORT = process.env.PORT || 3000;
 db.sequelize.sync({ alter: true }).then(() => {

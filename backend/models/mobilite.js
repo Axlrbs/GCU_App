@@ -70,6 +70,26 @@ module.exports = function(sequelize, DataTypes) {
     nbrecreditects: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    laboratoireid: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'laboratoire',
+        key: 'laboratoireid'
+      }
+    },
+    remarque: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    entrepriseId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'entreprise',
+        key: 'entrepriseId'
+      }
     }
   }, {
     sequelize,
@@ -85,6 +105,8 @@ module.exports = function(sequelize, DataTypes) {
     Mobilite.belongsTo(models.etat, { foreignKey: 'etatrelevenoteid', as: 'etatReleveNote' });
     Mobilite.belongsTo(models.typeMobilite, { foreignKey: 'typeMobiliteId' });
     Mobilite.belongsTo(models.etablissement, { foreignKey: 'etablissementId' });
+    Mobilite.belongsTo(models.laboratoire, { foreignKey: 'laboratoireid' });
+    Mobilite.belongsTo(models.entreprise, { foreignKey: 'entrepriseId' });
   };
 
   return Mobilite;

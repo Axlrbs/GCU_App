@@ -34,6 +34,7 @@ module.exports = function(sequelize, DataTypes) {
     Etablissement.hasMany(models.etablissementorigineformation, { foreignKey: 'etablissementId' });
     Etablissement.hasMany(models.mobilite, { foreignKey: 'etablissementId' });
     Etablissement.hasMany(models.etudiant, { foreignKey: 'etablissementId' });
+    Etablissement.hasMany(models.laboratoire, { foreignKey: 'etablissementId' });
   };
 
   return Etablissement;

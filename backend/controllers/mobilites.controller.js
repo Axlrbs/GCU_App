@@ -17,7 +17,16 @@ exports.getAll = async (req, res) => {
           {model: db.ville, include: [
             {model: db.pays}
           ]}
-        ]}
+        ]},
+        {
+          model: db.entreprise,
+          include: [
+            {
+              model: db.ville,
+              include: [{ model: db.pays }]
+            }
+          ]
+        }
       ]  });
   res.json(data);
 };
@@ -52,6 +61,15 @@ exports.getOne = async (req, res) => {
         { 
           model: db.etablissement,
           attributes: ['etablissementId', 'nomEtablissement']
+        },
+        {
+          model: db.entreprise,
+          include: [
+            {
+              model: db.ville,
+              include: [{ model: db.pays }]
+            }
+          ]
         }
       ]
     });

@@ -70,6 +70,14 @@ module.exports = function(sequelize, DataTypes) {
         model: 'etablissement',
         key: 'etablissementId'
       }
+    },
+    nationaliteid: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'nationalite',
+        key: 'nationaliteid'
+      }
     }
   }, {
     sequelize,
@@ -91,6 +99,7 @@ module.exports = function(sequelize, DataTypes) {
     Etudiant.hasMany(models.parcoursEtudiantParSemestre, { foreignKey: 'numeroEtudiant' });
     Etudiant.belongsTo(models.statutetudiant, { foreignKey: 'statutetudiantid' });
     Etudiant.belongsTo(models.etablissement, { foreignKey: 'etablissementId' });
+    Etudiant.belongsTo(models.nationalite, { foreignKey: 'nationaliteid' });
   };
 
   return Etudiant;

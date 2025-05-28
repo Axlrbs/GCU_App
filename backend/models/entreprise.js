@@ -32,6 +32,7 @@ module.exports = function(sequelize, DataTypes) {
   Entreprise.associate = function(models) {
     Entreprise.belongsTo(models.ville, { foreignKey: 'villeId' });
     Entreprise.hasMany(models.stage, { foreignKey: 'entrepriseId' });
+    Entreprise.hasMany(models.mobilite, { foreignKey: 'entrepriseId' });
   };
 
   return Entreprise;
