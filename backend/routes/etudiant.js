@@ -130,7 +130,7 @@ router.get('/:id', controller.getOne);
 router.post(
   '/ajouter',
   authenticateToken,
-  checkRole('admin', 'etudes'), // Seuls les admins ou etudes peuvent créer un étudiant
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), // Seuls les admins ou etudes peuvent créer un étudiant
   [
     body('numeroEtudiant').isInt().withMessage('Le numéro étudiant doit être un entier.'),
     body('nomEtudiant').notEmpty().withMessage('Le nom est requis.'),
@@ -166,7 +166,7 @@ router.post(
  */
 router.put('/:id', 
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.update
 );
 

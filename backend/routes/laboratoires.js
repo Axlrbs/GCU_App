@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const laboCtrl = require('../controllers/laboratoires.controller');
+const { authenticateToken, checkRole } = require('../middlewares/auth');
 
 /**
  * @swagger
@@ -63,7 +64,12 @@ router.get('/:id', laboCtrl.getLaboratoireById);
  *       201:
  *         description: Laboratoire créé
  */
-router.post('/', laboCtrl.createLaboratoire);
+router.post(
+  '/',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  laboCtrl.createLaboratoire
+);
 
 /**
  * @swagger
@@ -95,7 +101,12 @@ router.post('/', laboCtrl.createLaboratoire);
  *       404:
  *         description: Laboratoire non trouvé
  */
-router.put('/:id', laboCtrl.updateLaboratoire);
+router.put(
+  '/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  laboCtrl.updateLaboratoire
+);
 
 /**
  * @swagger
@@ -116,6 +127,11 @@ router.put('/:id', laboCtrl.updateLaboratoire);
  *       404:
  *         description: Laboratoire non trouvé
  */
-router.delete('/:id', laboCtrl.deleteLaboratoire);
+router.delete(
+  '/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  laboCtrl.deleteLaboratoire
+);
 
 module.exports = router;

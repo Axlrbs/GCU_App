@@ -54,7 +54,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('formationId').isInt(),
     body('etablissementId').isInt()
@@ -86,6 +86,6 @@ router.post(
  *         description: Supprimée
  */
 router.delete('/:formationId/:etablissementId', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

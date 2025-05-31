@@ -53,7 +53,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'mobilites'),
+  checkRole('admin', 'mobilites', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [body('libelleTypeMobilite').notEmpty().withMessage('Le libellé est requis')],
   controller.create
 );
@@ -105,7 +105,7 @@ router.get('/:id', controller.getOne);
  *         description: Type mis à jour
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'mobilites'), controller.update);
+  checkRole('admin', 'mobilites', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -126,6 +126,6 @@ router.put('/:id', authenticateToken,
  *         description: Type supprimé
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'mobilites'), controller.remove);
+  checkRole('admin', 'mobilites', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

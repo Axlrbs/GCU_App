@@ -57,7 +57,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'stages'),
+  checkRole('admin', 'stages', 'stages/mobilites', 'stages/etudes', 'stages/mobilites/etudes'),
   [
     body('raisonSociale').notEmpty(),
     body('villeId').isInt()
@@ -116,7 +116,7 @@ router.get('/:id', controller.getOne);
  *         description: OK
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'stages'), controller.update);
+  checkRole('admin', 'stages', 'stages/mobilites', 'stages/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -137,6 +137,6 @@ router.put('/:id', authenticateToken,
  *         description: Supprimée
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'stages'), controller.remove);
+  checkRole('admin', 'stages', 'stages/mobilites', 'stages/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

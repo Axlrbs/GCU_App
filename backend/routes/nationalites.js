@@ -64,7 +64,7 @@ router.get('/:id', natCtrl.getNationaliteById);
  *       201:
  *         description: Nationalité créée
  */
-router.post('/', authenticateToken, checkRole('admin','etudes'), natCtrl.createNationalite);
+router.post('/', authenticateToken, checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), natCtrl.createNationalite);
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ router.post('/', authenticateToken, checkRole('admin','etudes'), natCtrl.createN
  *       404:
  *         description: Nationalité non trouvée
  */
-router.put('/:id', authenticateToken, checkRole('admin','etudes'), natCtrl.updateNationalite);
+router.put('/:id', authenticateToken, checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), natCtrl.updateNationalite);
 
 /**
  * @swagger
@@ -117,6 +117,6 @@ router.put('/:id', authenticateToken, checkRole('admin','etudes'), natCtrl.updat
  *       404:
  *         description: Nationalité non trouvée
  */
-router.delete('/:id', authenticateToken, checkRole('admin','etudes'), natCtrl.deleteNationalite);
+router.delete('/:id', authenticateToken, checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), natCtrl.deleteNationalite);
 
 module.exports = router;

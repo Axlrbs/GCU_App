@@ -62,7 +62,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('numeroEtudiant').isInt().withMessage('Numéro étudiant requis'),
     body('promotionId').isInt().withMessage('Promotion requise'),
@@ -180,7 +180,7 @@ router.get('/:id', controller.getOne);
  *         description: Résultat mis à jour
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.update);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -201,7 +201,7 @@ router.put('/:id', authenticateToken,
  *         description: Supprimé
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 // --- resultatanneeetudiants.js (router) ---
 /**
@@ -268,7 +268,7 @@ router.delete('/:id', authenticateToken,
 router.put(
   '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.updateByCompositeKey
 );
 
@@ -300,7 +300,7 @@ router.put(
 router.get(
   '/resultatanneeetudiant/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
   authenticateToken,
-  checkRole('admin', 'etudes', 'stages', 'mobilites'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.getByCompositeKey
 );
 

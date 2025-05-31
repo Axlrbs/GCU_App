@@ -124,7 +124,7 @@ router.post('/change-password', authenticateToken,
  *                 type: string
  *               role:
  *                 type: string
- *                 enum: [admin, etudes, mobilites, stages]
+ *                 enum: [admin, etudes, mobilites, stages, stages/etudes, stages/mobilites, mobilites/etudes, stages/mobilites/etudes]
  *     responses:
  *       201:
  *         description: Créé avec succès
@@ -160,7 +160,7 @@ router.post('/', authenticateToken,
  *                 type: string
  *               role:
  *                 type: string
- *                 enum: [admin, etudes, mobilites]
+ *                 enum: [admin, etudes, mobilites, stages, stages/etudes, stages/mobilites, mobilites/etudes, stages/mobilites/etudes]
  *     responses:
  *       200:
  *         description: Mis à jour avec succès

@@ -40,7 +40,10 @@ const { authenticateToken, checkRole } = require('../middlewares/auth');
  *       404:
  *         description: Parcours introuvable avec les paramètres spécifiés
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken, 
+  checkRole('admin', 'etudes', 'stages', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAll);
 
 /**
  * @swagger
@@ -213,8 +216,10 @@ router.get('/:id', controller.getById);
  *       201:
  *         description: Enregistrement créé
  */
-router.post('/', authenticateToken,
-    checkRole('admin', 'etudes'),controller.create);
+router.post(
+  '/',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),controller.create);
 
 /**
  * @swagger
@@ -247,7 +252,7 @@ router.post('/', authenticateToken,
  *         description: Enregistrement mis à jour
  */
 router.put('/:id', authenticateToken,
-    checkRole('admin', 'etudes'),controller.update);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),controller.update);
 
 /**
  * @swagger
@@ -266,8 +271,8 @@ router.put('/:id', authenticateToken,
  *       204:
  *         description: Supprimé avec succès
  */
-router.delete('/:id',authenticateToken,
-    checkRole('admin', 'etudes'), controller.remove);
+router.delete('/:id', authenticateToken,
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 // --- routes/parcoursEtudiantParSemestre.js ---
 /**
@@ -327,7 +332,7 @@ router.delete('/:id',authenticateToken,
 router.put(
     '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId/semestre/:semestreId',
     authenticateToken,
-    checkRole('admin', 'etudes'),
+    checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
     controller.updateByCompositeKey
   );
   

@@ -58,7 +58,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes', 'mobilites'),
+  checkRole('admin', 'etudes', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('nomEtablissement').notEmpty().withMessage('Le nom est requis'),
     body('villeId').isInt().withMessage('La ville est requise')
@@ -117,7 +117,7 @@ router.get('/:id', controller.getOne);
  *         description: Établissement modifié
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'etudes', 'mobilites'), controller.update);
+  checkRole('admin', 'etudes', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -138,6 +138,6 @@ router.put('/:id', authenticateToken,
  *         description: Supprimé
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes', 'mobilites'), controller.remove);
+  checkRole('admin', 'etudes', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

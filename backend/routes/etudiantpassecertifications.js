@@ -57,7 +57,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('numeroEtudiant').isInt(),
     body('certificationLangueId').isInt()
@@ -83,8 +83,8 @@ router.post(
  *       204:
  *         description: Certification supprimée
  */
-router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+router.delete('/:id',authenticateToken,
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 /**
  * @swagger
@@ -129,7 +129,7 @@ router.delete('/:id', authenticateToken,
 router.put(
   '/:id',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('numeroEtudiant').isInt(),
     body('certificationLangueId').isInt()

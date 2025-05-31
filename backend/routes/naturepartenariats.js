@@ -53,7 +53,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [body('libelleNaturePartenariat').notEmpty().withMessage('Le libellé est requis')],
   controller.create
 );
@@ -105,7 +105,7 @@ router.get('/:id', controller.getOne);
  *         description: Mise à jour réussie
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.update);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -126,6 +126,6 @@ router.put('/:id', authenticateToken,
  *         description: Supprimée
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

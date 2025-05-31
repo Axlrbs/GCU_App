@@ -38,6 +38,7 @@ exports.getAll = async (req, res) => {
         { model: AnneeUniv, attributes: ['anneeUniversitaireId','libelleAnneeUniversitaire'] }
       ],
       order: [
+        [ { model: Etudiant },'nomEtudiant','ASC'],
         ['anneeUniversitaireId','DESC'],
         ['semestreId',         'ASC']
       ]

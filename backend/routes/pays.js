@@ -76,7 +76,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes','stages','mobilites'),
+  checkRole('admin', 'etudes', 'stages', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('codePays').notEmpty().withMessage('Le code du pays est requis.'),
     body('nomPays').notEmpty().withMessage('Le nom du pays est requis.')
@@ -131,7 +131,7 @@ router.get('/:codePays', controller.getOne);
  *         description: Pays modifié
  */
 router.put('/:codePays', authenticateToken,
-  checkRole('admin', 'etudes','stages','mobilites'), controller.update);
+  checkRole('admin', 'etudes', 'stages', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -152,6 +152,6 @@ router.put('/:codePays', authenticateToken,
  *         description: Supprimé
  */
 router.delete('/:codePays', authenticateToken,
-  checkRole('admin', 'etudes','stages','mobilites'), controller.remove);
+  checkRole('admin', 'etudes', 'stages', 'mobilites', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

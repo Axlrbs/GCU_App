@@ -24,7 +24,10 @@ const router = express.Router();
  *       200:
  *         description: Liste des absences
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken, 
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), 
+  controller.getAll);
 
 /**
  * @swagger
@@ -85,7 +88,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('numeroetudiant').isInt().withMessage('Le numéro étudiant doit être un entier'),
     body('dateDebutAbsence').isISO8601().withMessage('La date de début doit être une date valide'),
@@ -157,7 +160,7 @@ router.post(
  */
 router.put('/:id', 
   authenticateToken,
-  checkRole('admin', 'etudes'), 
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), 
   [
     body('numeroetudiant').optional().isInt().withMessage('Le numéro étudiant doit être un entier'),
     body('dateDebutAbsence').optional().isISO8601().withMessage('La date de début doit être une date valide'),
@@ -189,7 +192,7 @@ router.put('/:id',
  *         description: Absence supprimée
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 /**
  * @swagger

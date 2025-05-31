@@ -61,7 +61,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'gestionnaire'),
+  checkRole('admin'),
   [
     body('libelleAnneeUniversitaire').notEmpty().withMessage('Le libellé est requis'),
     body('dateDebut').isISO8601().withMessage('Date de début invalide'),
@@ -123,7 +123,7 @@ router.get('/:id', controller.getOne);
  *         description: Année mise à jour
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'etudes','mobilites'), controller.update);
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -144,6 +144,6 @@ router.put('/:id', authenticateToken,
  *         description: Supprimée
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes','mobilites'), controller.remove);
+  checkRole('admin', 'etudes', 'mobilites',  'stages/etudes', 'stages/mobilites', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

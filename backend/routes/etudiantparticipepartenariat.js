@@ -100,7 +100,7 @@ router.get('/:id', controller.findOne);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('partenaireId').isInt(),
     body('naturePartenariatId').isInt(),
@@ -157,7 +157,7 @@ router.post(
 router.put(
   '/:id',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('partenaireId').isInt(),
     body('naturePartenariatId').isInt(),
@@ -185,6 +185,6 @@ router.put(
  *         description: Participation supprimée
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;

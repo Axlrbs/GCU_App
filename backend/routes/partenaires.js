@@ -55,7 +55,7 @@ router.get('/', controller.getAll);
 router.post(
   '/',
   authenticateToken,
-  checkRole('admin', 'etudes'),
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   [
     body('nomPartenaire').notEmpty().withMessage('Le nom est requis'),
     body('secteurPartenaire').notEmpty().withMessage('Le secteur est requis')
@@ -112,7 +112,7 @@ router.get('/:id', controller.getOne);
  *         description: Partenaire mis à jour
  */
 router.put('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.update);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.update);
 
 /**
  * @swagger
@@ -133,6 +133,6 @@ router.put('/:id', authenticateToken,
  *         description: Supprimé
  */
 router.delete('/:id', authenticateToken,
-  checkRole('admin', 'etudes'), controller.remove);
+  checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), controller.remove);
 
 module.exports = router;
