@@ -18,7 +18,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'partenaire',
-    schema: 'public',
     timestamps: false
   });
 

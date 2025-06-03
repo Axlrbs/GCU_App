@@ -31,7 +31,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'etudiantPasseCertification',
-    schema: 'public',
     timestamps: false
   });
 

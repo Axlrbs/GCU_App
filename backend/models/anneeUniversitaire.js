@@ -22,7 +22,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'anneeUniversitaire',
-    schema: 'public',
     timestamps: false
   });
 
@@ -36,4 +35,4 @@ module.exports = function(sequelize, DataTypes) {
   
 
   return AnneeUniversitaire;
-};
+}; 

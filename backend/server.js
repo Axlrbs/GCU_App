@@ -11,7 +11,7 @@ const path = require('path');
 
 // Active CORS pour autoriser localhost:5173 (React)
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173','https://gcuadmin.gcu-insa.fr'],
   credentials: true
 }));
 
@@ -27,6 +27,21 @@ const rateLimit = require('express-rate-limit');
 
 app.use(express.json()); 
 app.use(helmet());
+
+app.use((err, req, res, next) => {
+  // Log l’erreur dans un fichier log
+  fs.appendFileSync(
+    path.join(__dirname, 'error.log'),
+    `[${new Date().toISOString()}] ${err.stack || err}\n`
+  );
+  res.status(500).json({ success: false, message: 'Erreur serveur' });
+});
+
+
+// en dev uniquement
+app.use((err, req, res, next) => {
+  res.status(500).json({ success: false, message: err.message, stack: err.stack });
+});
 
 // forcer le https
 app.use((req, res, next) => {
@@ -98,7 +113,7 @@ app.use('/api/formations', formationRoutes);
 const partenaireRoutes = require('./routes/partenaires');
 app.use('/api/partenaires', partenaireRoutes);
 
-const naturePartenariatRoutes = require('./routes/naturePartenariats');
+const naturePartenariatRoutes = require('./routes/naturepartenariats');
 app.use('/api/naturepartenariats', naturePartenariatRoutes);
 
 const etudiantParticipePartenariatRoutes = require('./routes/etudiantparticipepartenariat');

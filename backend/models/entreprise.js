@@ -25,7 +25,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'entreprise',
-    schema: 'public',
     timestamps: false
   });
 

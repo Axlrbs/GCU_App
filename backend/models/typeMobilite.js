@@ -14,7 +14,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'typeMobilite',
-    schema: 'public',
     timestamps: false
   });
 

@@ -34,7 +34,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'tuteur',
-    schema: 'public',
     timestamps: false
   });
 

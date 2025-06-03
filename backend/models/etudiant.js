@@ -82,7 +82,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'etudiant',
-    schema: 'public',
     timestamps: false
   });
 

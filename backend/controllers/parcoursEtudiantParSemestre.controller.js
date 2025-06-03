@@ -7,6 +7,7 @@ const Parcours                  = db.parcours;
 const Semestre                  = db.semestre;
 const AnneeUniv                 = db.anneeUniversitaire;
 const Promotion                 = db.promotion;
+const Cursus                    = db.cursus;
 
 exports.getAll = async (req, res) => {
   try {
@@ -32,7 +33,15 @@ exports.getAll = async (req, res) => {
     const parcours = await ParcoursSemestre.findAll({
       where: whereParcours,
       include: [
-        { model: Etudiant,  attributes: ['numeroEtudiant','nomEtudiant','prenomEtudiant'] },
+        { model: Etudiant,  attributes: ['numeroEtudiant','nomEtudiant','prenomEtudiant','cursusId'],
+          include: [
+            { 
+              model: Cursus, 
+              // CORRECTION: Suppression de l'alias 'cursu' qui cause le problème
+              attributes: ['cursusId', 'cursusLibelle'] // ou le nom correct du champ libellé
+            }
+          ]
+         },
         { model: Parcours,  as: 'parcour', attributes: ['nomParcours'], required: false },
         { model: Semestre,  attributes: ['semestreId','libelleSemestre'] },
         { model: AnneeUniv, attributes: ['anneeUniversitaireId','libelleAnneeUniversitaire'] }
@@ -71,9 +80,15 @@ exports.getAll = async (req, res) => {
       const idAn   = r.anneeUniversitaire.anneeUniversitaireId;
       const libAn  = r.anneeUniversitaire.libelleAnneeUniversitaire;
       const key    = `${etu.numeroEtudiant}-${idAn}`;
+      const cursus = r.etudiant.cursus;
       const promo  = promoMap.get(key) || null;
       const semId  = r.semestre.semestreId;
       const nomPar = r.parcour?.nomParcours || null;
+
+      console.log(
+    `[Etudiant] n°${etu.numeroEtudiant} | cursusId: ${etu.cursusId} | cursus:`,
+    etu.cursus
+  );
 
       if (!map.has(key)) {
         map.set(key, {
@@ -82,6 +97,8 @@ exports.getAll = async (req, res) => {
           prenom:         etu.prenomEtudiant,
           annee:          libAn,
           anneeUniversitaireId: idAn,
+          cursusId:       etu.cursusId, // Ajout de l'ID du cursus
+          cursus:         etu.cursu?.cursusLibelle || cursus?.libelleCursus || null,
           promotion:      promo,
           parcoursS1:     null,
           semestreS1Id:   null,

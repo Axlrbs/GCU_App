@@ -13,7 +13,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'role',
-    schema: 'public',
     timestamps: false
   });
 

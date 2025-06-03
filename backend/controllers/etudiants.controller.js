@@ -22,9 +22,9 @@ exports.getAll = async (req, res) => {
     // Ajout de la condition de recherche par nom/prénom
     if (search) {
       whereConditions[Op.or] = [
-        { nomEtudiant: { [Op.iLike]: `%${search}%` } },
-        { prenomEtudiant: { [Op.iLike]: `%${search}%` } },
-        { mailEtudiant: { [Op.iLike]: `%${search}%` } },
+        { nomEtudiant: { [Op.like]: `%${search}%` } },
+        { prenomEtudiant: { [Op.like]: `%${search}%` } },
+        { mailEtudiant: { [Op.like]: `%${search}%` } },
         !isNaN(search) ? { numeroEtudiant: parseInt(search) } : null
       ].filter(Boolean);
     }
@@ -32,7 +32,7 @@ exports.getAll = async (req, res) => {
     //console.dir(whereConditions, { depth: null });
     // Ajout des filtres supplémentaires
     if (sexe) {
-      whereConditions.sexe = { [db.Sequelize.Op.iLike]: sexe };
+      whereConditions.sexe = { [db.Sequelize.Op.like]: sexe };
     }
     if (cursusId) {
       whereConditions.cursusId = cursusId;
@@ -48,11 +48,6 @@ exports.getAll = async (req, res) => {
     console.log('SYMBOLS:', Object.getOwnPropertySymbols(whereConditions));
     console.log('whereConditions:', JSON.stringify(whereConditions, null, 2));*/
 
-    const result = await db.etudiant.findAll({
-      where: {
-        nomEtudiant: { [Op.iLike]: '%ABADIE%' }
-      }
-    });
     //console.log('Résultat test direct:', result);
 
     const { count, rows } = await db.etudiant.findAndCountAll({
@@ -83,7 +78,7 @@ exports.getAll = async (req, res) => {
 
     /*const result = await db.etudiant.findAll({
       where: {
-        nomEtudiant: { [db.Sequelize.Op.iLike]: '%abadie%' }
+        nomEtudiant: { [db.Sequelize.Op.like]: '%abadie%' }
       }
     });
     console.log(result);*/
@@ -96,7 +91,8 @@ exports.getAll = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Erreur serveur' });
+    res.status(500).json({ success: false, message: error.message, stack: error.stack });
+    //res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 };
 

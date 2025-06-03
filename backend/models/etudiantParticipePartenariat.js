@@ -50,7 +50,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'etudiantParticipePartenariat',
-    schema: 'public',
     timestamps: false
   });
 

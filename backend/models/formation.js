@@ -14,7 +14,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'formation',
-    schema: 'public',
     timestamps: false,
     indexes: [
       {

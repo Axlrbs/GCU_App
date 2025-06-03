@@ -21,7 +21,6 @@ module.exports = function(sequelize, DataTypes) {
     }, {
       sequelize,
       tableName: 'laboratoire',
-      schema: 'public',
       timestamps: false
     });
   

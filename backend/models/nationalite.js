@@ -22,7 +22,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'nationalite',
-    schema: 'public',
     timestamps: false
   });
 

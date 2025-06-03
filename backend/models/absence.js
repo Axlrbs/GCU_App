@@ -46,7 +46,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'absence',
-    schema: 'public',
     timestamps: false
   });
 

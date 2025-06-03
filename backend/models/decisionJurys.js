@@ -13,7 +13,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'decisionJurys',
-    schema: 'public',
     timestamps: false
   });
 

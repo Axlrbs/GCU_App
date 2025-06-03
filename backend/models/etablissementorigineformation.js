@@ -29,7 +29,6 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'etablissementorigineformation',
-    schema: 'public',
     timestamps: false
   });
 

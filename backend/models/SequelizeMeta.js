@@ -9,7 +9,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'SequelizeMeta',
-    schema: 'public',
     timestamps: false,
     indexes: [
       {

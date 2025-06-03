@@ -13,6 +13,10 @@ const swaggerDefinition = {
       url: 'http://localhost:3000',
       description: 'Serveur local',
     },
+    {
+      url: 'https://apigcuadmin.gcu-insa.fr',
+      description: 'Serveur o2switch',
+    },
   ],
   components: {
     securitySchemes: {

@@ -14,7 +14,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'cursus',
-    schema: 'public',
     timestamps: false
   });
 

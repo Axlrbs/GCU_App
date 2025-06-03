@@ -10,6 +10,8 @@ exports.getAll = async (req, res) => {
     const offset = (page - 1) * limit;
 
     const naturePartenariatId = req.query.naturePartenariatId ? parseInt(req.query.naturePartenariatId) : null;
+    const annee = req.query.annee;
+    const mois = req.query.mois;
 
     const whereConditions = {};
     if (naturePartenariatId) {
@@ -19,9 +21,19 @@ exports.getAll = async (req, res) => {
 
     if (search) {
       whereConditions[Op.or] = [
-        { '$etudiant.nomEtudiant$': { [Op.iLike]: `%${search}%` } },
-        { '$etudiant.prenomEtudiant$': { [Op.iLike]: `%${search}%` } }
+        { '$etudiant.nomEtudiant$': { [Op.like]: `%${search}%` } },
+        { '$etudiant.prenomEtudiant$': { [Op.like]: `%${search}%` } }
       ];
+    }
+    if (annee && mois) {
+      const debut = `${annee}-${mois.padStart(2, "0")}-01`;
+      const finDate = new Date(annee, mois, 0); // 0 = dernier jour du mois précédent donc donne le bon mois
+      const fin = finDate.toISOString().slice(0, 10);
+      whereConditions.dateActivite = { [Op.between]: [debut, fin] };
+    } else if (annee) {
+      const debut = `${annee}-01-01`;
+      const fin = `${annee}-12-31`;
+      whereConditions.dateActivite = { [Op.between]: [debut, fin] };
     }
 
     const estdiplome = req.query.estdiplome;

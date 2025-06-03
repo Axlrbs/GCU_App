@@ -21,7 +21,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'ville',
-    schema: 'public',
     timestamps: false
   });
 

@@ -61,7 +61,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'stage',
-    schema: 'public',
     timestamps: false
   });
 
