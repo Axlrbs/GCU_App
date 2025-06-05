@@ -128,7 +128,8 @@ exports.getTuteursByRole = async (req, res) => {
           model: db.role,
           attributes: ['roleLibelle']
         }
-      ]
+      ],
+      order: [['nomTuteur','ASC'],['prenomTuteur','ASC']]
     });
 
     res.json(tuteurs);

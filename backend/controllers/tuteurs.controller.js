@@ -8,7 +8,8 @@ exports.getAll = async (req, res) => {
         { model: db.role, as: 'role' },
         { model: db.stage, as: 'stagesPro' },
         { model: db.stage, as: 'stagesPedago' }
-      ]
+      ],
+      order: [['nomTuteur', 'ASC']]
     });
     res.json(tuteurs);
   } catch (err) {

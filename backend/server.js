@@ -175,7 +175,7 @@ app.use('/api/nationalites', nationaliteRoutes);
 
 // Lancer le serveur
 const PORT = process.env.PORT || 3000;
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync({ alter: false }).then(() => {
   app.listen(PORT, () => {
     console.log('Base synchronisée (alter)');
     console.log(`Serveur à l'écoute sur http://localhost:${PORT}`);

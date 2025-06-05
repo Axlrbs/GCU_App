@@ -4,7 +4,9 @@ const { validationResult } = require('express-validator');
 exports.getAll = async (req, res) => {
   try {
     const entreprises = await db.entreprise.findAll({
-      include: [{ model: db.ville, as: 'ville' }]
+      include: [{ model: db.ville, as: 'ville',
+        include:[{model: db.pays}]},],
+      order: [['raisonSociale', 'ASC'],[{ model: db.ville, as: 'ville' }, 'nomVille', 'ASC']]
     });
     res.json(entreprises);
   } catch (err) {

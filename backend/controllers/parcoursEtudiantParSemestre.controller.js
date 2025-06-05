@@ -334,6 +334,56 @@ exports.updateByCompositeKey = async (req, res) => {
   }
 };
 
+exports.upsertByCompositeKey = async (req, res) => {
+  const { numeroEtudiant, anneeUniversitaireId, semestreId } = req.params;
+  const parcoursId = req.body.parcoursId;
+
+  // Vérif obligatoire
+  if (parcoursId === undefined) {
+    return res.status(400).json({
+      success: false,
+      message: 'Le champ parcoursId est obligatoire'
+    });
+  }
+
+  try {
+    // 1. On cherche si la ligne existe déjà
+    let record = await ParcoursSemestre.findOne({
+      where: { 
+        numeroEtudiant: parseInt(numeroEtudiant, 10), 
+        anneeUniversitaireId: parseInt(anneeUniversitaireId, 10),
+        semestreId: parseInt(semestreId, 10)
+      }
+    });
+
+    if (record) {
+      // 2. Si trouvée, update
+      await record.update({ parcoursId: parseInt(parcoursId, 10) });
+      return res.json({
+        success: true,
+        message: 'Parcours mis à jour avec succès',
+        data: record
+      });
+    } else {
+      // 3. Si absente, insert
+      record = await ParcoursSemestre.create({
+        numeroEtudiant: parseInt(numeroEtudiant, 10),
+        anneeUniversitaireId: parseInt(anneeUniversitaireId, 10),
+        semestreId: parseInt(semestreId, 10),
+        parcoursId: parseInt(parcoursId, 10)
+      });
+      return res.status(201).json({
+        success: true,
+        message: 'Parcours créé avec succès',
+        data: record
+      });
+    }
+  } catch (err) {
+    console.error('Erreur upsert parcours:', err);
+    return res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
 /**
  * GET /api/parcoursetudiantparsemestre?numeroEtudiant=X&anneeUniversitaireId=Y&semestreId=Z
  * Récupère le parcours spécifique d'un étudiant pour un semestre et une année donnés

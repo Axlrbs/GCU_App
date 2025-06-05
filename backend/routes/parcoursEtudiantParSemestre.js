@@ -333,7 +333,7 @@ router.put(
     '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId/semestre/:semestreId',
     authenticateToken,
     checkRole('admin', 'etudes', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
-    controller.updateByCompositeKey
+    controller.upsertByCompositeKey
   );
   
 
