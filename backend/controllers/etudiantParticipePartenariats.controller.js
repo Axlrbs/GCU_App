@@ -10,12 +10,18 @@ exports.getAll = async (req, res) => {
     const offset = (page - 1) * limit;
 
     const naturePartenariatId = req.query.naturePartenariatId ? parseInt(req.query.naturePartenariatId) : null;
+     const partenaireId = req.query.partenaireId
+      ? parseInt(req.query.partenaireId)
+      : null;   
     const annee = req.query.annee;
     const mois = req.query.mois;
 
     const whereConditions = {};
     if (naturePartenariatId) {
       whereConditions.naturePartenariatId = naturePartenariatId;
+    }
+     if (partenaireId) {
+      whereConditions.partenaireId = partenaireId; // ← ajout
     }
     const search = req.query.search || '';
 

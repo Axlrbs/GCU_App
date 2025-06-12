@@ -3,7 +3,11 @@ const { validationResult } = require('express-validator');
 
 exports.getAll = async (req, res) => {
   try {
-    const partenaires = await db.partenaire.findAll();
+    const partenaires = await db.partenaire.findAll({
+      order: [
+        ['nomPartenaire', 'ASC']
+      ]
+    });
     res.json(partenaires);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
