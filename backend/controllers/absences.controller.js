@@ -1,5 +1,6 @@
 const db = require('../models');
 const { validationResult } = require('express-validator');
+const { Op, fn, col, where } = require('sequelize');
 
 exports.getAll = async (req, res) => {
   try {
@@ -7,21 +8,94 @@ exports.getAll = async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
     const offset = (page - 1) * limit;
 
+    const search = req.query.search || ''; // recherche sur nom ou prénom
+    const anneeUniversitaireId = req.query.anneeUniversitaireId
+      ? parseInt(req.query.anneeUniversitaireId)
+      : null;
+
+    const whereConditions = {};
+
+    if (anneeUniversitaireId) {
+      whereConditions.anneeUniversitaireId = anneeUniversitaireId;
+    }
+
+    const include = [
+      {
+        model: db.etudiant,
+        required: true,
+        where: search
+          ? {
+              [Op.or]: [
+                where(
+                  fn(
+                    'concat',
+                    fn('lower', col('etudiant.prenomEtudiant')),
+                    ' ',
+                    fn('lower', col('etudiant.nomEtudiant'))
+                  ),
+                  {
+                    [Op.like]: `%${search.toLowerCase()}%`
+                  }
+                ),
+                where(
+                  fn(
+                    'concat',
+                    fn('lower', col('etudiant.nomEtudiant')),
+                    ' ',
+                    fn('lower', col('etudiant.prenomEtudiant'))
+                  ),
+                  {
+                    [Op.like]: `%${search.toLowerCase()}%`
+                  }
+                )
+              ]
+            }
+          : undefined
+      },
+      { model: db.anneeUniversitaire }
+    ];
+
     const { count, rows } = await db.absence.findAndCountAll({
-        include: [
-          { model: db.etudiant },
-          { model: db.anneeUniversitaire}
-        ],
-        limit,
-        offset,
-        order: [['numeroetudiant', 'ASC']] // Tu peux changer selon besoin
-      });
+      where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      include,
+      limit,
+      offset,
+      distinct: true,
+      order: [['numeroetudiant', 'ASC']]
+    });
 
     res.json({
       success: true,
       totalItems: count,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
+      data: rows
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur serveur',
+      error: err.message,
+      stack: err.stack
+    });
+  }
+};
+
+exports.getAllSansPagination = async (req, res) => {
+  try {
+
+    const { count, rows } = await db.absence.findAndCountAll({
+        include: [
+          { model: db.etudiant },
+          { model: db.anneeUniversitaire}
+        ],
+        order: [['numeroetudiant', 'ASC']] // Tu peux changer selon besoin
+      });
+
+    res.json({
+      success: true,
+      totalItems: count,
       data: rows
     });
   } catch (err) {

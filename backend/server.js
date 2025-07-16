@@ -9,10 +9,13 @@ const db = require('./models');
 const fs = require('fs');
 const path = require('path');
 
+app.set('trust proxy', true);
+
 // Active CORS pour autoriser localhost:5173 (React)
 app.use(cors({
   origin: ['http://localhost:5173','https://gcuadmin.gcu-insa.fr'],
-  credentials: true
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
 }));
 
 // ANTI-DDOS

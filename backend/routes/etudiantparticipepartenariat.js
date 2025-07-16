@@ -28,6 +28,20 @@ router.get('/', controller.getAll);
 
 /**
  * @swagger
+ * /api/etudiantparticipepartenariats/sans-pagination:
+ *   get:
+ *     summary: Lister toutes les participations sans pagination
+ *     tags: [EtudiantParticipePartenariat]
+ *     responses:
+ *       200:
+ *         description: Liste des participations
+ */
+router.get('/sans-pagination', 
+  controller.getAllWithoutPagi
+);
+
+/**
+ * @swagger
  * /api/etudiantparticipepartenariats/sans-etudiant:
  *   get:
  *     summary: Lister toutes les participations sans numeroEtudiant

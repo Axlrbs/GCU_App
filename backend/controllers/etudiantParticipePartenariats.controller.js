@@ -106,6 +106,83 @@ exports.getWithoutEtudiant = async (req, res) => {
   }
 };
 
+exports.getAllWithoutPagi = async (req, res) => {
+  try {
+    const naturePartenariatId = req.query.naturePartenariatId ? parseInt(req.query.naturePartenariatId) : null;
+     const partenaireId = req.query.partenaireId
+      ? parseInt(req.query.partenaireId)
+      : null;   
+    const annee = req.query.annee;
+    const mois = req.query.mois;
+
+    const whereConditions = {};
+    if (naturePartenariatId) {
+      whereConditions.naturePartenariatId = naturePartenariatId;
+    }
+     if (partenaireId) {
+      whereConditions.partenaireId = partenaireId; // ← ajout
+    }
+    const search = req.query.search || '';
+
+    if (search) {
+      whereConditions[Op.or] = [
+        { '$etudiant.nomEtudiant$': { [Op.like]: `%${search}%` } },
+        { '$etudiant.prenomEtudiant$': { [Op.like]: `%${search}%` } }
+      ];
+    }
+    if (annee && mois) {
+      const debut = `${annee}-${mois.padStart(2, "0")}-01`;
+      const finDate = new Date(annee, mois, 0); // 0 = dernier jour du mois précédent donc donne le bon mois
+      const fin = finDate.toISOString().slice(0, 10);
+      whereConditions.dateActivite = { [Op.between]: [debut, fin] };
+    } else if (annee) {
+      const debut = `${annee}-01-01`;
+      const fin = `${annee}-12-31`;
+      whereConditions.dateActivite = { [Op.between]: [debut, fin] };
+    }
+
+    const estdiplome = req.query.estdiplome;
+    if (estdiplome !== undefined) {
+      whereConditions['$etudiant.estdiplome$'] = estdiplome === 'true';
+    }
+
+    const { count, rows } = await db.etudiantParticipePartenariat.findAndCountAll({
+      where: (Object.keys(whereConditions).length > 0 || Object.getOwnPropertySymbols(whereConditions).length > 0)? whereConditions : undefined,
+      include: [
+        { 
+          model: db.etudiant,
+          attributes: ['numeroEtudiant', 'nomEtudiant', 'prenomEtudiant', 'mailEtudiant', 'estdiplome']
+        },
+        { 
+          model: db.partenaire,
+          attributes: ['partenaireId', 'nomPartenaire', 'secteurPartenaire']
+        },
+        { 
+          model: db.naturePartenariat,
+          attributes: ['naturePartenariatId', 'libelleNaturePartenariat']
+        }
+      ],
+      order: [
+        [{ model: db.etudiant, as: 'etudiant' }, 'nomEtudiant', 'ASC'],
+        ['dateActivite', 'DESC']
+      ]
+    });
+
+    res.json({
+      success: true,
+      data: rows
+    });
+  } catch (error) {
+    console.error('Erreur dans getAll:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Erreur serveur',
+      error: error.message,
+      details: error.original?.message || null
+    });
+  }
+};
+
 exports.create = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

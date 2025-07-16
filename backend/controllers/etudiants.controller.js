@@ -185,24 +185,50 @@ exports.getEtablissementOne = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  try{
-  const etu = await db.etudiant.findByPk(req.params.id);
-  if (!etu) return res.status(404).json({ message: 'Étudiant non trouvé' });
-  //console.log('Données reçues pour update:', req.body);
+  const oldNumero = req.params.id;
+  const newNumero = req.body.numeroEtudiant;
 
-  await etu.update(req.body);
-  
-  res.json(etu);
-  } catch (err) {
-    console.error('Erreur lors de la modification:', err.message);
-    if (err.parent) {
-      console.error('Postgres detail:', err.parent.detail);
-      console.error('Routine:', err.parent.routine);
-      console.error('Code:', err.parent.code);
-      console.error('Contrainte:', err.parent.constraint);
-      console.error('Table:', err.parent.table);
-      console.error('Colonne:', err.parent.column);
+  try {
+    const etu = await db.etudiant.findOne({ where: { numeroEtudiant: oldNumero } });
+
+    if (!etu) {
+      return res.status(404).json({ message: 'Étudiant non trouvé' });
     }
+
+    // Si le numéro change, on met à jour d'abord la clé primaire
+    if (oldNumero !== newNumero) {
+      await db.sequelize.transaction(async (t) => {
+        // Étape 1 : mise à jour du numéro uniquement
+        await db.sequelize.query(
+          `UPDATE etudiant SET numeroEtudiant = :newNumero WHERE numeroEtudiant = :oldNumero`,
+          {
+            replacements: { oldNumero, newNumero },
+            transaction: t
+          }
+        );
+
+        // Étape 2 : mise à jour des autres champs (si d'autres sont présents)
+        const updateData = { ...req.body };
+        delete updateData.numeroEtudiant;
+
+        if (Object.keys(updateData).length > 0) {
+          await db.etudiant.update(updateData, {
+            where: { numeroEtudiant: newNumero },
+            transaction: t
+          });
+        }
+      });
+
+      return res.json({ message: 'Étudiant modifié avec succès', numeroEtudiant: newNumero });
+    }
+
+    // Si le numéro ne change pas, mise à jour classique
+    await etu.update(req.body);
+    res.json(etu);
+
+  } catch (err) {
+    await transaction.rollback();
+    console.error('Erreur lors de la modification:', err);
     res.status(500).json({
       message: err.message,
       detail: err.parent?.detail,

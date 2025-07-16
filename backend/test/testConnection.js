@@ -1,14 +1,30 @@
 const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize('database_development', 'postgres', 'password', {
-  host: '127.0.0.1',
-  dialect: 'postgres', // ou mysql/sqlite
-});
+require('dotenv').config();
 
-(async () => {
+const sequelize = new Sequelize(
+  process.env.DATABASE_NAME,
+  process.env.DATABASE_USERNAME,
+  process.env.DATABASE_PASSWORD,
+  {
+    host: process.env.DATABASE_HOST,
+    dialect: process.env.DATABASE_DIALECT || 'mysql',
+    port: 3306,
+    dialectOptions: {
+      connectTimeout: 10000
+    },
+    logging: false,
+  }
+);
+
+async function testConnection() {
   try {
     await sequelize.authenticate();
-    console.log('Connexion réussie à la base de données !');
+    console.log('✅ Connexion à la base réussie.');
   } catch (error) {
-    console.error('Erreur de connexion :', error);
+    console.error('❌ Erreur lors de la connexion :', error);
+  } finally {
+    await sequelize.close();
   }
-})();
+}
+
+testConnection();

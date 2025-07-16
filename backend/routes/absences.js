@@ -24,10 +24,25 @@ const router = express.Router();
  *       200:
  *         description: Liste des absences
  */
-router.get('/', 
-  authenticateToken, 
+router.get('/',
+    authenticateToken, 
   checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), 
   controller.getAll);
+
+/**
+ * @swagger
+ * /api/absences/sans-pagination:
+ *   get:
+ *     summary: Lister toutes les absences sans pagination
+ *     tags: [Absences]
+ *     responses:
+ *       200:
+ *         description: Liste des absences sans pagination
+ */
+router.get('/sans-pagination', 
+  authenticateToken, 
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'), 
+  controller.getAllSansPagination);
 
 /**
  * @swagger

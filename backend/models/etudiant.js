@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   const Etudiant = sequelize.define('etudiant', {
     numeroEtudiant: {
-      autoIncrement: true,
+      autoIncrement: false,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
