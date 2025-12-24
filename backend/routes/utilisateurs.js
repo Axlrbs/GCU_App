@@ -95,8 +95,10 @@ router.get('/:id', authenticateToken,
  *       401:
  *         description: Utilisateur non authentifié
  */
-router.post('/change-password', authenticateToken,
-        checkRole('admin','etudes','mobilites','stages'),controller.changePassword);
+router.post('/change-password', 
+    authenticateToken,
+    checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+    controller.changePassword);
 
 /**
  * @swagger

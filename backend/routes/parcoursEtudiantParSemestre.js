@@ -162,6 +162,8 @@ router.get(
  */
 router.get(
   '/etudiants/liste',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.getStudents
 );
 
@@ -184,7 +186,10 @@ router.get(
  *       404:
  *         description: Introuvable
  */
-router.get('/:id', controller.getById);
+router.get('/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getById);
 
 /**
  * @swagger

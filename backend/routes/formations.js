@@ -76,7 +76,10 @@ router.post(
  *       404:
  *         description: Formation non trouvée
  */
-router.get('/:id', controller.getOne);
+router.get('/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getOne);
 
 /**
  * @swagger

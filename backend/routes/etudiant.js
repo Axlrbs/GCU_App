@@ -24,7 +24,10 @@ const router = express.Router();
  *       200:
  *         description: Succès
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAll);
 
 /**
  * @swagger
@@ -36,7 +39,10 @@ router.get('/', controller.getAll);
  *       200:
  *         description: Liste des étudiants non diplômés
  */
-router.get('/non-diplomes', controller.getNonDiplomes);
+router.get('/non-diplomes', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getNonDiplomes);
 
 /**
  * @swagger
@@ -55,7 +61,10 @@ router.get('/non-diplomes', controller.getNonDiplomes);
  *       200:
  *         description: Étudiant trouvé
  */
-router.get('/getEtablissementById/:id', controller.getEtablissementOne);
+router.get('/getEtablissementById/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getEtablissementOne);
 
 /**
  * @swagger
@@ -74,7 +83,10 @@ router.get('/getEtablissementById/:id', controller.getEtablissementOne);
  *       200:
  *         description: Étudiant trouvé
  */
-router.get('/:id', controller.getOne);
+router.get('/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getOne);
 
 /**
  * @swagger

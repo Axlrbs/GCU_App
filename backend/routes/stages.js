@@ -24,7 +24,10 @@ const router = express.Router();
  *       200:
  *         description: Liste OK
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAll);
 
 /**
  * @swagger
@@ -87,7 +90,10 @@ router.post(
  *       404:
  *         description: Introuvable
  */
-router.get('/:id', controller.getOne);
+router.get('/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getOne);
 
 /**
  * @swagger
@@ -156,7 +162,10 @@ router.delete('/:id', authenticateToken,
  *       200:
  *         description: Liste des tuteurs
  */
-router.get('/tuteurs/role/:roleId', controller.getTuteursByRole);
+router.get('/tuteurs/role/:roleId', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getTuteursByRole);
 
 
 module.exports = router;

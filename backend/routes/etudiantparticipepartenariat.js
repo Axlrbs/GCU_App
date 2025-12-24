@@ -24,7 +24,10 @@ const router = express.Router();
  *       200:
  *         description: Liste des participations
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAll);
 
 /**
  * @swagger
@@ -37,6 +40,8 @@ router.get('/', controller.getAll);
  *         description: Liste des participations
  */
 router.get('/sans-pagination', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.getAllWithoutPagi
 );
 
@@ -50,7 +55,10 @@ router.get('/sans-pagination',
  *       200:
  *         description: Liste des participations
  */
-router.get('/sans-etudiant', controller.getWithoutEtudiant);
+router.get('/sans-etudiant', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getWithoutEtudiant);
 
 /**
  * @swagger
@@ -68,7 +76,10 @@ router.get('/sans-etudiant', controller.getWithoutEtudiant);
  *       200:
  *         description: Liste des participations
  */
-router.get('/:id', controller.findOne);
+router.get('/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.findOne);
 
 
 

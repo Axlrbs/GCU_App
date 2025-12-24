@@ -262,7 +262,10 @@ router.delete('/:id', authenticateToken,
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id', controller.getById);
+router.get('/:id', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getById);
 
 /**
  * @swagger
@@ -341,6 +344,9 @@ router.get('/:id', controller.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/filter/year', controller.getAllByYear);
+router.get('/filter/year',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAllByYear);
 
 module.exports = router;

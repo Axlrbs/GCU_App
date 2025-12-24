@@ -24,7 +24,10 @@ const router = express.Router();
  *       200:
  *         description: OK
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAll);
 
 /**
  * @swagger
@@ -168,7 +171,10 @@ router.post(
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id', controller.getOne);
+router.get('/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getOne);
 
 /**
  * @swagger

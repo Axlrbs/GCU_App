@@ -24,7 +24,10 @@ const router = express.Router();
  *       200:
  *         description: Liste des résultats
  */
-router.get('/', controller.getAll);
+router.get('/', 
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getAll);
 
 /**
  * @swagger
@@ -130,6 +133,8 @@ router.post(
  */
 router.get(
   '/resultatanneeetudiant',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.getHistoryByStudent
 );
 
@@ -151,7 +156,10 @@ router.get(
  *       404:
  *         description: Résultat non trouvé
  */
-router.get('/:id', controller.getOne);
+router.get('/:id',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
+  controller.getOne);
 
 /**
  * @swagger
@@ -331,6 +339,8 @@ router.get(
  */
 router.get(
   '/etudiant/:numeroEtudiant/annee/:anneeUniversitaireId',
+  authenticateToken,
+  checkRole('admin', 'etudes', 'mobilites', 'stages', 'stages/mobilites', 'stages/etudes', 'mobilites/etudes', 'stages/mobilites/etudes'),
   controller.getByCompositeKey
 );
 
