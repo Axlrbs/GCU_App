@@ -55,15 +55,15 @@ app.use((req, res, next) => {
 });
 
 // Swagger
-const setupSwagger = require('./swagger');
-setupSwagger(app);
+//const setupSwagger = require('./swagger');
+//setupSwagger(app);
 
-app.use('/api-docs', (req, res, next) => {
-  if (process.env.NODE_ENV === 'production') {
-    return res.status(403).send('Accès refusé en production');
-  }
-  next();
-});
+//app.use('/api-docs', (req, res, next) => {
+//  if (process.env.NODE_ENV === 'production') {
+//     return res.status(403).send('Accès refusé en production');
+//  }
+//  next();
+//});
 
 // LOG
 const morgan = require('morgan');
