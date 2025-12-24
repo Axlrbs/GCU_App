@@ -35,7 +35,7 @@ Créer un fichier `.env` à la racine du projet avec le contenu suivant :
 
 ```bash
 PORT=3000
-JWT_SECRET=mon_super_secret
+JWT_SECRET=""
 DATABASE_USERNAME=postgres
 DATABASE_PASSWORD=password
 DATABASE_NAME=database_development
